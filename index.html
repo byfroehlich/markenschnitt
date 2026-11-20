@@ -167,7 +167,7 @@ footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linie);font-s
   <div class="grid">
     <form class="panel" id="form" autocomplete="off">
 
-      <div class="vorlage"><p><b>Vorlage: Katjas Reel-Stil.</b> Weiße Serifenschrift oben im Bild, ruhig, natürlich, ohne Kästchen. Lädt alle Einstellungen, danach kannst du alles anpassen.</p><button type="button" class="btn" id="katjaBtn">Vorlage laden</button></div>
+      <div class="vorlage"><p><b>Vorlage: Katjas Reel-Stil.</b> Weiße Serifenschrift oben im Bild, Kernwörter in Pink, ruhig, natürlich, ohne Kästchen. Lädt alle Einstellungen, danach kannst du alles anpassen.</p><button type="button" class="btn" id="katjaBtn">Vorlage laden</button></div>
 
       <fieldset class="gruen">
         <legend>Aus der Markenberatung</legend>
@@ -229,6 +229,7 @@ footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linie);font-s
             <div class="opts" role="radiogroup" aria-label="Darstellung">
               <label class="opt"><input type="radio" name="substil" value="leuchten" checked><span>Wort leuchtet</span></label>
               <label class="opt"><input type="radio" name="substil" value="box"><span>Kästchen</span></label>
+              <label class="opt"><input type="radio" name="substil" value="stichwort"><span>Stichwörter farbig<small>Kernwörter in Markenfarbe</small></span></label>
               <label class="opt"><input type="radio" name="substil" value="schlicht"><span>Schlicht</span></label>
             </div></div>
           <div class="row"><span class="lab">Position</span>
@@ -372,9 +373,9 @@ var SATZ="Erstens startest du zu langsam. Zweitens fehlt der rote Faden. Und dri
 var DEFAULT={marke:"",ansprache:"du",ton:"",schreib:"",cta:"",tabu:"",notiz:"",ordner:"Markenschnitt",schrift:"Montserrat",eigeneName:"",farbe:"#C59A55",textfarbe:"weiß",woerter:"4",substil:"leuchten",pos:"unten",tempo:"natuerlich",zoom:"sparsam",hook:"eingeblendet",format:"9:16",look:"natuerlich"};
 var st=Object.assign({},DEFAULT);
 var KEY="markenschnitt.v1";
-var VERSION="3";
+var VERSION="4";
 var UPDATE_BASE="https://raw.githubusercontent.com/byfroehlich/markenschnitt/main/skill/";
-var ALLOWED={ansprache:["du","ihr","Sie"],schrift:["Montserrat","Poppins","Archivo Black","Bebas Neue","DM Serif Display","Inter","eigene"],textfarbe:["weiß","schwarz"],woerter:["2","4","6"],substil:["leuchten","box","schlicht"],pos:["unten","mitte","oben"],tempo:["ruhig","natuerlich","zuegig"],zoom:["aus","sparsam","lebendig"],hook:["aus","eingeblendet","getippt"],format:["9:16","9:16+4:5"],look:["natuerlich","warm","frisch","gedeckt"]};
+var ALLOWED={ansprache:["du","ihr","Sie"],schrift:["Montserrat","Poppins","Archivo Black","Bebas Neue","DM Serif Display","Inter","eigene"],textfarbe:["weiß","schwarz"],woerter:["2","4","6"],substil:["leuchten","box","stichwort","schlicht"],pos:["unten","mitte","oben"],tempo:["ruhig","natuerlich","zuegig"],zoom:["aus","sparsam","lebendig"],hook:["aus","eingeblendet","getippt"],format:["9:16","9:16+4:5"],look:["natuerlich","warm","frisch","gedeckt"]};
 function clean(o){var r=Object.assign({},DEFAULT);if(!o||typeof o!=="object")return r;Object.keys(DEFAULT).forEach(function(k){var v=o[k];if(typeof v!=="string")return;if(ALLOWED[k]){if(ALLOWED[k].indexOf(v)>=0)r[k]=v;}else if(k==="farbe"){if(/^#[0-9A-Fa-f]{6}$/.test(v))r[k]=v.toUpperCase();}else{r[k]=v.slice(0,600);}});return r;}
 try{st=clean(JSON.parse(localStorage.getItem(KEY)||"null"));}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
@@ -427,7 +428,7 @@ function buildPrompt(){
   var t=TEMPO[st.tempo];
   var zoomTxt={aus:"kein Zoom, die Einstellung bleibt gleich",sparsam:"sparsam: nur an den 2–3 stärksten Stellen auf 110 %, jeweils für einen ganzen Gedanken",lebendig:"lebendig: Zoom als Betonung bei starken Aussagen und Aufzählungen, bei Aufzählungen eine Stufe pro Punkt (106 %, 112 %, 118 %), nie über 125 %, der erste Zoom im ersten Satz"}[st.zoom];
   var hookTxt={aus:"kein Hook",eingeblendet:"Hook oben im Bild, einfach eingeblendet, ohne Ton",getippt:"Hook oben im Bild, Buchstabe für Buchstabe getippt (mit leisem Tippgeräusch, falls Edits eins anbietet)"}[st.hook];
-  var subTxt="höchstens "+st.woerter+" Wörter pro Zeile, "+({unten:"im unteren Drittel, aber über der Bedienleiste von Instagram",mitte:"in der Bildmitte unterhalb des Gesichts",oben:"oben im Bild, knapp unter dem oberen Rand von Instagram (nicht in den oberen 12 %), zwei Zeilen zentriert, nicht über dem Gesicht"}[st.pos])+", "+(st.substil==="box"?"jedes Wort in einem Kästchen ("+(st.textfarbe==="weiß"?"dunkel, halbtransparent":"hell, fast deckend")+"), das gesprochene Wort im Kästchen in der Markenfarbe":st.substil==="schlicht"?"alle Wörter gleich, ohne Kästchen und ohne farbige Hervorhebung, mit leichtem Schatten für gute Lesbarkeit":"das gesprochene Wort leuchtet in der Markenfarbe auf");
+  var subTxt="höchstens "+st.woerter+" Wörter pro Zeile, "+({unten:"im unteren Drittel, aber über der Bedienleiste von Instagram",mitte:"in der Bildmitte unterhalb des Gesichts",oben:"oben im Bild, knapp unter dem oberen Rand von Instagram (nicht in den oberen 12 %), zwei Zeilen zentriert, nicht über dem Gesicht"}[st.pos])+", "+(st.substil==="box"?"jedes Wort in einem Kästchen ("+(st.textfarbe==="weiß"?"dunkel, halbtransparent":"hell, fast deckend")+"), das gesprochene Wort im Kästchen in der Markenfarbe":st.substil==="stichwort"?"alle Wörter in der Grundfarbe, ohne Kästchen, mit leichtem Schatten; in jedem Untertitel-Block werden die ein bis zwei wichtigsten Wörter (Kernaussage, nie Füllwörter wie und, die, ist) dauerhaft in der Markenfarbe hervorgehoben, solange der Block zu sehen ist":st.substil==="schlicht"?"alle Wörter gleich, ohne Kästchen und ohne farbige Hervorhebung, mit leichtem Schatten für gute Lesbarkeit":"das gesprochene Wort leuchtet in der Markenfarbe auf");
   var schreib=lines(st.schreib);
   var tabu=lines(st.tabu);
   var fmt=st.format==="9:16"?"9:16 (1080 × 1920)":"9:16 (1080 × 1920), dazu eine zweite Fassung in 4:5 (1080 × 1350) für den Feed";
@@ -476,7 +477,9 @@ function buildPrompt(){
   P.push("# Markenschnitt");
   P.push("Version: "+VERSION);
   P.push("");
-  P.push("Lies vor jedem Schnitt die Datei ~/.claude/skills/markenschnitt/stil.md. Ihre Stilangaben gelten vor den Stilvorgaben in dieser Datei, die Regeln unter „Gelernt“ vor dem Grundstil. Der Abschnitt „Datenschutz“ und das Postverbot aus Schritt 11 gelten immer. Beachte Wirkung, Ansprache und Hinweise aus der Beratung in stil.md bei Hook, Abschluss und allen Schnittentscheidungen.");
+  P.push("Stilprofile: Mein eigener Stil steht in stil.md. Stile für Kundinnen und Kunden liegen je als eigene Datei in ~/.claude/skills/markenschnitt/stile/<Name>.md. Nenne ich einen Namen (z. B. „Schneide das Reel für Anna“), nimm genau diese Datei statt stil.md, sonst stil.md. Misch nie zwei Stile. Sag vor jedem Schnitt in einem Satz, welcher Stil gilt. „Leg einen Stil für <Name> an“: Kopier stil.md nach stile/<Name>.md, lösch dort alles unter „Gelernt“ und übernimm dann meine Änderungen. „Merk dir das“ schreibt immer in die Datei des Stils, der gerade gilt. Ordner und Schrift des Stils stehen in seiner Datei.");
+  P.push("");
+  P.push("Lies vor jedem Schnitt die Stildatei (stil.md oder das genannte Profil). Ihre Stilangaben gelten vor den Stilvorgaben in dieser Datei, die Regeln unter „Gelernt“ vor dem Grundstil. Der Abschnitt „Datenschutz“ und das Postverbot aus Schritt 11 gelten immer. Beachte Wirkung, Ansprache und Hinweise aus der Beratung in stil.md bei Hook, Abschluss und allen Schnittentscheidungen.");
   P.push("");
   P.push("## Welcher Weg");
   P.push("- Edits-Werkzeuge verfügbar: Weg A, Schnitt in Edits.");
@@ -491,6 +494,7 @@ function buildPrompt(){
   P.push("4. Bild im Format aus stil.md. Das Gesicht bleibt gut im Bild. Halte oben und unten etwa 12 % frei von wichtigen Inhalten, dort liegen die Bedienelemente von Instagram.");
   P.push("5. Zoom wie in stil.md. Immer als harter Schnitt, nie als Zoomfahrt. Ein Zoom gilt für einen ganzen Gedanken, danach zurück auf die normale Einstellung.");
   P.push("6. Untertitel wie in stil.md, in der Sprache des Videos, Wort für Wort hervorgehoben, wenn stil.md nichts anderes sagt. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.");
+  P.push("   Rechtschreibung in den Untertiteln: Jeder Block ist ein Ausschnitt aus dem ganzen Satz, nicht ein neuer Satz. Groß- und Kleinschreibung richtet sich nach dem ganzen Satz: Ein Block, der mitten im Satz beginnt, fängt klein an (außer Nomen und Namen). Satzzeichen aus dem Transkript (Punkt, Komma, Fragezeichen, Ausrufezeichen) bleiben am Wort stehen und werden mit angezeigt. Weg A: Edits setzt Blockanfänge oft automatisch groß und lässt Satzzeichen weg. Lies deshalb nach dem Einsetzen jeden Untertitel-Block mit den Edits-Werkzeugen aus, vergleich ihn Wort für Wort mit dem Transkript und korrigier Schreibung und Satzzeichen. Was sich in Edits nicht korrigieren lässt, nennst du im Bericht mit Zeitstelle.");
   P.push("7. Hook wie in stil.md: der Satz aus dem Video, der am meisten neugierig macht, meistens der erste. Höchstens 8 Wörter, oben im Bild, in den ersten Sekunden, in meiner Schrift.");
   P.push("8. Abschluss wie in stil.md: Steht dort ein Abschluss-Satz, blende ihn in den letzten 2 Sekunden ein, in Markenfarbe und meiner Schrift.");
   P.push("9. Look wie in stil.md, als Ebene direkt über dem Video und unter Hook und Untertiteln, damit diese ihre Farben behalten.");
@@ -508,7 +512,7 @@ function buildPrompt(){
   P.push("");
   P.push("## Nachbessern");
   P.push("- Sage ich, was mir nicht gefällt, änderst du es im aktuellen Reel.");
-  P.push("- Sage ich „Merk dir das“, trägst du die Änderung als kurze Regel mit Datum unter „Gelernt“ in stil.md ein. Diese Datei hier (SKILL.md) änderst du dafür nie.");
+  P.push("- Sage ich „Merk dir das“, trägst du die Änderung als kurze Regel mit Datum unter „Gelernt“ in der Stildatei ein, die gerade gilt. Diese Datei hier (SKILL.md) änderst du dafür nie.");
   P.push("");
   P.push("## Neue Fassung");
   P.push("- Prüf höchstens einmal am Tag, vor dem ersten Schnitt, ob es eine neue Fassung gibt. Lies dazu mit curl -fsSL "+UPDATE_BASE+"VERSION (nicht mit WebFetch). Halte das Datum der Prüfung in ~/.markenschnitt/letzte-pruefung fest, auch wenn sie fehlschlägt (Ordner bei Bedarf anlegen).");
@@ -570,7 +574,8 @@ function styleApply(){
 }
 function showLine(i,j){
   var cs=chunks();subsEl.textContent="";
-  cs[i].forEach(function(w,k){var s=document.createElement("span");s.textContent=w;if(k===j&&st.substil!=="schlicht")s.className="on";subsEl.appendChild(s);});
+  var kw=0;cs[i].forEach(function(w,k){if(w.length>cs[i][kw].length)kw=k;});
+  cs[i].forEach(function(w,k){var s=document.createElement("span");s.textContent=w;if(st.substil==="stichwort"?k===kw:(k===j&&st.substil!=="schlicht"))s.className="on";subsEl.appendChild(s);});
   var z=1;
   if(st.zoom==="sparsam"&&i===Math.floor(cs.length/2))z=1.10;
   if(st.zoom==="lebendig"){z=[1,1.06,1.12,1.18,1.06,1.12,1.18][i%7];}
@@ -653,7 +658,7 @@ $("codeLoad").addEventListener("click",function(){
     fillForm();update(true);$("codeStatus").textContent="Stil geladen.";
   }catch(e){$("codeStatus").textContent="Der Code passt nicht. Bitte den ganzen Stil-Code einfügen, er beginnt mit MS1.";}
 });
-var KATJA={marke:"Katja Schlecht Brand Consulting",ansprache:"du",ton:"klar, warm, nahbar. Identität statt Inszenierung",schreib:"",cta:"",tabu:"Keine Emojis in den Untertiteln.\nRuhig schneiden, Katja nie hetzen.",notiz:"Vorlage aus ihren bisherigen Reels: Untertitel in weißer, fetter Serifenschrift oben im Bild, zwei Zeilen, ohne Kästchen und ohne Farbhervorhebung. Natürliche Aufnahmen, oft draußen. Hat sie in Edits eine bestimmte Schrift, gilt diese statt DM Serif Display.",ordner:"Markenschnitt",schrift:"DM Serif Display",eigeneName:"",farbe:"#C59A55",textfarbe:"weiß",woerter:"4",substil:"schlicht",pos:"oben",tempo:"natuerlich",zoom:"sparsam",hook:"aus",format:"9:16",look:"natuerlich"};
+var KATJA={marke:"Katja Schlecht Brand Consulting",ansprache:"du",ton:"klar, warm, nahbar. Identität statt Inszenierung",schreib:"",cta:"",tabu:"Keine Emojis in den Untertiteln.\nRuhig schneiden, Katja nie hetzen.",notiz:"Vorlage aus ihren bisherigen Reels: Untertitel in weißer, fetter Serifenschrift oben im Bild, zwei Zeilen, ohne Kästchen, die Kernwörter pink hervorgehoben. Natürliche Aufnahmen, oft draußen. Hat sie in Edits eine bestimmte Schrift, gilt diese statt DM Serif Display.",ordner:"Markenschnitt",schrift:"DM Serif Display",eigeneName:"",farbe:"#E8458B",textfarbe:"weiß",woerter:"4",substil:"stichwort",pos:"oben",tempo:"natuerlich",zoom:"sparsam",hook:"aus",format:"9:16",look:"natuerlich"};
 $("katjaBtn").addEventListener("click",function(){st=clean(KATJA);fillForm();update(true);$("katjaBtn").textContent="Geladen ✓";setTimeout(function(){$("katjaBtn").textContent="Vorlage laden";},2000);});
 $("replay").addEventListener("click",function(){if(reduce)still();else play();});
 

@@ -3,9 +3,11 @@ name: markenschnitt
 description: Schneidet meine Reels in meinem Markenstil, in Edits oder direkt als Videodatei. Nutzen, wenn ich „Schneide mein neues Reel“ sage, ein Video geschnitten haben will oder nach einem Schnitt „Merk dir das“ sage.
 ---
 # Markenschnitt
-Version: 3
+Version: 4
 
-Lies vor jedem Schnitt die Datei ~/.claude/skills/markenschnitt/stil.md. Ihre Stilangaben gelten vor den Stilvorgaben in dieser Datei, die Regeln unter „Gelernt“ vor dem Grundstil. Der Abschnitt „Datenschutz“ und das Postverbot aus Schritt 11 gelten immer. Beachte Wirkung, Ansprache und Hinweise aus der Beratung in stil.md bei Hook, Abschluss und allen Schnittentscheidungen.
+Stilprofile: Mein eigener Stil steht in stil.md. Stile für Kundinnen und Kunden liegen je als eigene Datei in ~/.claude/skills/markenschnitt/stile/<Name>.md. Nenne ich einen Namen (z. B. „Schneide das Reel für Anna“), nimm genau diese Datei statt stil.md, sonst stil.md. Misch nie zwei Stile. Sag vor jedem Schnitt in einem Satz, welcher Stil gilt. „Leg einen Stil für <Name> an“: Kopier stil.md nach stile/<Name>.md, lösch dort alles unter „Gelernt“ und übernimm dann meine Änderungen. „Merk dir das“ schreibt immer in die Datei des Stils, der gerade gilt. Ordner und Schrift des Stils stehen in seiner Datei.
+
+Lies vor jedem Schnitt die Stildatei (stil.md oder das genannte Profil). Ihre Stilangaben gelten vor den Stilvorgaben in dieser Datei, die Regeln unter „Gelernt“ vor dem Grundstil. Der Abschnitt „Datenschutz“ und das Postverbot aus Schritt 11 gelten immer. Beachte Wirkung, Ansprache und Hinweise aus der Beratung in stil.md bei Hook, Abschluss und allen Schnittentscheidungen.
 
 ## Welcher Weg
 - Edits-Werkzeuge verfügbar: Weg A, Schnitt in Edits.
@@ -20,6 +22,7 @@ Lies vor jedem Schnitt die Datei ~/.claude/skills/markenschnitt/stil.md. Ihre St
 4. Bild im Format aus stil.md. Das Gesicht bleibt gut im Bild. Halte oben und unten etwa 12 % frei von wichtigen Inhalten, dort liegen die Bedienelemente von Instagram.
 5. Zoom wie in stil.md. Immer als harter Schnitt, nie als Zoomfahrt. Ein Zoom gilt für einen ganzen Gedanken, danach zurück auf die normale Einstellung.
 6. Untertitel wie in stil.md, in der Sprache des Videos, Wort für Wort hervorgehoben, wenn stil.md nichts anderes sagt. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.
+   Rechtschreibung in den Untertiteln: Jeder Block ist ein Ausschnitt aus dem ganzen Satz, nicht ein neuer Satz. Groß- und Kleinschreibung richtet sich nach dem ganzen Satz: Ein Block, der mitten im Satz beginnt, fängt klein an (außer Nomen und Namen). Satzzeichen aus dem Transkript (Punkt, Komma, Fragezeichen, Ausrufezeichen) bleiben am Wort stehen und werden mit angezeigt. Weg A: Edits setzt Blockanfänge oft automatisch groß und lässt Satzzeichen weg. Lies deshalb nach dem Einsetzen jeden Untertitel-Block mit den Edits-Werkzeugen aus, vergleich ihn Wort für Wort mit dem Transkript und korrigier Schreibung und Satzzeichen. Was sich in Edits nicht korrigieren lässt, nennst du im Bericht mit Zeitstelle.
 7. Hook wie in stil.md: der Satz aus dem Video, der am meisten neugierig macht, meistens der erste. Höchstens 8 Wörter, oben im Bild, in den ersten Sekunden, in meiner Schrift.
 8. Abschluss wie in stil.md: Steht dort ein Abschluss-Satz, blende ihn in den letzten 2 Sekunden ein, in Markenfarbe und meiner Schrift.
 9. Look wie in stil.md, als Ebene direkt über dem Video und unter Hook und Untertiteln, damit diese ihre Farben behalten.
@@ -37,7 +40,7 @@ Weg A: Alles nur mit den Edits-Werkzeugen. Installiere dafür nichts zusätzlich
 
 ## Nachbessern
 - Sage ich, was mir nicht gefällt, änderst du es im aktuellen Reel.
-- Sage ich „Merk dir das“, trägst du die Änderung als kurze Regel mit Datum unter „Gelernt“ in stil.md ein. Diese Datei hier (SKILL.md) änderst du dafür nie.
+- Sage ich „Merk dir das“, trägst du die Änderung als kurze Regel mit Datum unter „Gelernt“ in der Stildatei ein, die gerade gilt. Diese Datei hier (SKILL.md) änderst du dafür nie.
 
 ## Neue Fassung
 - Prüf höchstens einmal am Tag, vor dem ersten Schnitt, ob es eine neue Fassung gibt. Lies dazu mit curl -fsSL https://raw.githubusercontent.com/byfroehlich/markenschnitt/main/skill/VERSION (nicht mit WebFetch). Halte das Datum der Prüfung in ~/.markenschnitt/letzte-pruefung fest, auch wenn sie fehlschlägt (Ordner bei Bedarf anlegen).
