@@ -96,6 +96,10 @@ select option{background:#1C1710}
 @keyframes blink{50%{opacity:0}}
 .subs{position:absolute;left:6%;right:6%;text-align:center;font-size:22px;line-height:1.15;font-weight:700}
 .subs.pos-unten{bottom:20%}
+.subs.pos-oben{top:13%}
+.vorlage{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border:1px solid var(--gold);border-radius:var(--radius-kachel) 0 0 0;padding:18px 24px}
+.vorlage p{color:var(--leise);font-size:.9rem;max-width:36rem}
+.vorlage b{color:var(--text);font-weight:500}
 .subs.pos-mitte{top:56%}
 .subs span{display:inline-block;margin:0 .14em;color:var(--subtext,#fff);text-shadow:0 2px 6px rgba(0,0,0,.5)}
 .subs.box span{background:var(--boxbg,rgba(0,0,0,.55));padding:0 .18em;border-radius:4px;text-shadow:none}
@@ -163,6 +167,8 @@ footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linie);font-s
   <div class="grid">
     <form class="panel" id="form" autocomplete="off">
 
+      <div class="vorlage"><p><b>Vorlage: Katjas Reel-Stil.</b> Weiße Serifenschrift oben im Bild, ruhig, natürlich, ohne Kästchen. Lädt alle Einstellungen, danach kannst du alles anpassen.</p><button type="button" class="btn" id="katjaBtn">Vorlage laden</button></div>
+
       <fieldset class="gruen">
         <legend>Aus der Markenberatung</legend>
         <p class="hint">Diese Angaben entstehen im Beratungsgespräch. Sie machen aus einem guten Schnitt einen, der nach deiner Marke klingt.</p>
@@ -223,11 +229,13 @@ footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linie);font-s
             <div class="opts" role="radiogroup" aria-label="Darstellung">
               <label class="opt"><input type="radio" name="substil" value="leuchten" checked><span>Wort leuchtet</span></label>
               <label class="opt"><input type="radio" name="substil" value="box"><span>Kästchen</span></label>
+              <label class="opt"><input type="radio" name="substil" value="schlicht"><span>Schlicht</span></label>
             </div></div>
           <div class="row"><span class="lab">Position</span>
             <div class="opts" role="radiogroup" aria-label="Position">
               <label class="opt"><input type="radio" name="pos" value="unten" checked><span>unteres Drittel</span></label>
               <label class="opt"><input type="radio" name="pos" value="mitte"><span>Mitte</span></label>
+              <label class="opt"><input type="radio" name="pos" value="oben"><span>Oben</span></label>
             </div></div>
         </div>
       </fieldset>
@@ -335,7 +343,7 @@ footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linie);font-s
     <p class="status" id="codeStatus" role="status"></p>
   </section>
 
-  <footer><span>Markenschnitt · Fassung 2</span><span>Deine Videodateien bleiben auf deinem Rechner. · <a href="https://byfroehlich.de/#impressum" style="color:var(--gold)">Impressum</a> · <a href="https://byfroehlich.de/#datenschutz" style="color:var(--gold)">Datenschutz</a></span></footer>
+  <footer><span>Markenschnitt · Fassung 3</span><span>Deine Videodateien bleiben auf deinem Rechner. · <a href="https://byfroehlich.de/#impressum" style="color:var(--gold)">Impressum</a> · <a href="https://byfroehlich.de/#datenschutz" style="color:var(--gold)">Datenschutz</a></span></footer>
 </div>
 </div>
 
@@ -364,9 +372,9 @@ var SATZ="Erstens startest du zu langsam. Zweitens fehlt der rote Faden. Und dri
 var DEFAULT={marke:"",ansprache:"du",ton:"",schreib:"",cta:"",tabu:"",notiz:"",ordner:"Markenschnitt",schrift:"Montserrat",eigeneName:"",farbe:"#C59A55",textfarbe:"weiß",woerter:"4",substil:"leuchten",pos:"unten",tempo:"natuerlich",zoom:"sparsam",hook:"eingeblendet",format:"9:16",look:"natuerlich"};
 var st=Object.assign({},DEFAULT);
 var KEY="markenschnitt.v1";
-var VERSION="2";
+var VERSION="3";
 var UPDATE_BASE="https://raw.githubusercontent.com/byfroehlich/markenschnitt/main/skill/";
-var ALLOWED={ansprache:["du","ihr","Sie"],schrift:["Montserrat","Poppins","Archivo Black","Bebas Neue","DM Serif Display","Inter","eigene"],textfarbe:["weiß","schwarz"],woerter:["2","4","6"],substil:["leuchten","box"],pos:["unten","mitte"],tempo:["ruhig","natuerlich","zuegig"],zoom:["aus","sparsam","lebendig"],hook:["aus","eingeblendet","getippt"],format:["9:16","9:16+4:5"],look:["natuerlich","warm","frisch","gedeckt"]};
+var ALLOWED={ansprache:["du","ihr","Sie"],schrift:["Montserrat","Poppins","Archivo Black","Bebas Neue","DM Serif Display","Inter","eigene"],textfarbe:["weiß","schwarz"],woerter:["2","4","6"],substil:["leuchten","box","schlicht"],pos:["unten","mitte","oben"],tempo:["ruhig","natuerlich","zuegig"],zoom:["aus","sparsam","lebendig"],hook:["aus","eingeblendet","getippt"],format:["9:16","9:16+4:5"],look:["natuerlich","warm","frisch","gedeckt"]};
 function clean(o){var r=Object.assign({},DEFAULT);if(!o||typeof o!=="object")return r;Object.keys(DEFAULT).forEach(function(k){var v=o[k];if(typeof v!=="string")return;if(ALLOWED[k]){if(ALLOWED[k].indexOf(v)>=0)r[k]=v;}else if(k==="farbe"){if(/^#[0-9A-Fa-f]{6}$/.test(v))r[k]=v.toUpperCase();}else{r[k]=v.slice(0,600);}});return r;}
 try{st=clean(JSON.parse(localStorage.getItem(KEY)||"null"));}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
@@ -419,7 +427,7 @@ function buildPrompt(){
   var t=TEMPO[st.tempo];
   var zoomTxt={aus:"kein Zoom, die Einstellung bleibt gleich",sparsam:"sparsam: nur an den 2–3 stärksten Stellen auf 110 %, jeweils für einen ganzen Gedanken",lebendig:"lebendig: Zoom als Betonung bei starken Aussagen und Aufzählungen, bei Aufzählungen eine Stufe pro Punkt (106 %, 112 %, 118 %), nie über 125 %, der erste Zoom im ersten Satz"}[st.zoom];
   var hookTxt={aus:"kein Hook",eingeblendet:"Hook oben im Bild, einfach eingeblendet, ohne Ton",getippt:"Hook oben im Bild, Buchstabe für Buchstabe getippt (mit leisem Tippgeräusch, falls Edits eins anbietet)"}[st.hook];
-  var subTxt="höchstens "+st.woerter+" Wörter pro Zeile, "+(st.pos==="unten"?"im unteren Drittel, aber über der Bedienleiste von Instagram":"in der Bildmitte unterhalb des Gesichts")+", "+(st.substil==="box"?"jedes Wort in einem Kästchen ("+(st.textfarbe==="weiß"?"dunkel, halbtransparent":"hell, fast deckend")+"), das gesprochene Wort im Kästchen in der Markenfarbe":"das gesprochene Wort leuchtet in der Markenfarbe auf");
+  var subTxt="höchstens "+st.woerter+" Wörter pro Zeile, "+({unten:"im unteren Drittel, aber über der Bedienleiste von Instagram",mitte:"in der Bildmitte unterhalb des Gesichts",oben:"oben im Bild, knapp unter dem oberen Rand von Instagram (nicht in den oberen 12 %), zwei Zeilen zentriert, nicht über dem Gesicht"}[st.pos])+", "+(st.substil==="box"?"jedes Wort in einem Kästchen ("+(st.textfarbe==="weiß"?"dunkel, halbtransparent":"hell, fast deckend")+"), das gesprochene Wort im Kästchen in der Markenfarbe":st.substil==="schlicht"?"alle Wörter gleich, ohne Kästchen und ohne farbige Hervorhebung, mit leichtem Schatten für gute Lesbarkeit":"das gesprochene Wort leuchtet in der Markenfarbe auf");
   var schreib=lines(st.schreib);
   var tabu=lines(st.tabu);
   var fmt=st.format==="9:16"?"9:16 (1080 × 1920)":"9:16 (1080 × 1920), dazu eine zweite Fassung in 4:5 (1080 × 1350) für den Feed";
@@ -482,7 +490,7 @@ function buildPrompt(){
   P.push("3. Grobschnitt: Schneide Pausen raus, die länger sind als die Pausengrenze in stil.md, dazu „äh“, „ähm“, Versprecher und abgebrochene Anläufe. Von einem doppelten Anlauf bleibt der letzte vollständige. Vor und nach jedem Satz bleibt etwa 0,15 Sekunden Luft, damit es nicht gehetzt klingt. Stell nie etwas um und lass nie Inhalt weg, außer Wiederholungen.");
   P.push("4. Bild im Format aus stil.md. Das Gesicht bleibt gut im Bild. Halte oben und unten etwa 12 % frei von wichtigen Inhalten, dort liegen die Bedienelemente von Instagram.");
   P.push("5. Zoom wie in stil.md. Immer als harter Schnitt, nie als Zoomfahrt. Ein Zoom gilt für einen ganzen Gedanken, danach zurück auf die normale Einstellung.");
-  P.push("6. Untertitel wie in stil.md, in der Sprache des Videos, Wort für Wort hervorgehoben. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.");
+  P.push("6. Untertitel wie in stil.md, in der Sprache des Videos, Wort für Wort hervorgehoben, wenn stil.md nichts anderes sagt. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.");
   P.push("7. Hook wie in stil.md: der Satz aus dem Video, der am meisten neugierig macht, meistens der erste. Höchstens 8 Wörter, oben im Bild, in den ersten Sekunden, in meiner Schrift.");
   P.push("8. Abschluss wie in stil.md: Steht dort ein Abschluss-Satz, blende ihn in den letzten 2 Sekunden ein, in Markenfarbe und meiner Schrift.");
   P.push("9. Look wie in stil.md, als Ebene direkt über dem Video und unter Hook und Untertiteln, damit diese ihre Farben behalten.");
@@ -494,7 +502,7 @@ function buildPrompt(){
   P.push("## Weg B im Detail");
   P.push("- Spracherkennung mit faster-whisper aus ~/.markenschnitt (Modell „small“, auf schnellen Rechnern „medium“), mit Zeitstempeln je Wort.");
   P.push("- Aus den Wortzeiten eine Schnittliste bauen und mit ffmpeg bildgenau schneiden. Danach aufs Format aus stil.md bringen.");
-  P.push("- Untertitel als ASS-Datei mit Wort-Hervorhebung in der Markenfarbe und meiner Schrift aus ~/.markenschnitt/fonts (statische .ttf-Dateien, keine variable Schrift; fontsdir mit ausgeschriebenem Pfad), ins Bild einbrennen. Hook und Abschluss ebenfalls über die ASS-Datei.");
+  P.push("- Untertitel als ASS-Datei so, wie stil.md es vorgibt (Position, Hervorhebung, Kästchen), in meiner Schrift aus ~/.markenschnitt/fonts (statische .ttf-Dateien, keine variable Schrift; fontsdir mit ausgeschriebenem Pfad), ins Bild einbrennen. Hook und Abschluss ebenfalls über die ASS-Datei.");
   P.push("- Zoom über Vergrößern und Zuschneiden an den Schnittstellen, Look über Farbfilter, Ton mit afftdn und loudnorm (I=-14).");
   P.push("- Schreib den Ablauf einmal als Skript nach ~/.markenschnitt/schnitt.py und nutze es danach wieder. Das Skript liest alle Stilwerte bei jedem Lauf aus stil.md und enthält selbst keine. Gibt es das Skript nicht, schreib es neu.");
   P.push("");
@@ -562,7 +570,7 @@ function styleApply(){
 }
 function showLine(i,j){
   var cs=chunks();subsEl.textContent="";
-  cs[i].forEach(function(w,k){var s=document.createElement("span");s.textContent=w;if(k===j)s.className="on";subsEl.appendChild(s);});
+  cs[i].forEach(function(w,k){var s=document.createElement("span");s.textContent=w;if(k===j&&st.substil!=="schlicht")s.className="on";subsEl.appendChild(s);});
   var z=1;
   if(st.zoom==="sparsam"&&i===Math.floor(cs.length/2))z=1.10;
   if(st.zoom==="lebendig"){z=[1,1.06,1.12,1.18,1.06,1.12,1.18][i%7];}
@@ -645,6 +653,8 @@ $("codeLoad").addEventListener("click",function(){
     fillForm();update(true);$("codeStatus").textContent="Stil geladen.";
   }catch(e){$("codeStatus").textContent="Der Code passt nicht. Bitte den ganzen Stil-Code einfügen, er beginnt mit MS1.";}
 });
+var KATJA={marke:"Katja Schlecht Brand Consulting",ansprache:"du",ton:"klar, warm, nahbar. Identität statt Inszenierung",schreib:"",cta:"",tabu:"Keine Emojis in den Untertiteln.\nRuhig schneiden, Katja nie hetzen.",notiz:"Vorlage aus ihren bisherigen Reels: Untertitel in weißer, fetter Serifenschrift oben im Bild, zwei Zeilen, ohne Kästchen und ohne Farbhervorhebung. Natürliche Aufnahmen, oft draußen. Hat sie in Edits eine bestimmte Schrift, gilt diese statt DM Serif Display.",ordner:"Markenschnitt",schrift:"DM Serif Display",eigeneName:"",farbe:"#C59A55",textfarbe:"weiß",woerter:"4",substil:"schlicht",pos:"oben",tempo:"natuerlich",zoom:"sparsam",hook:"aus",format:"9:16",look:"natuerlich"};
+$("katjaBtn").addEventListener("click",function(){st=clean(KATJA);fillForm();update(true);$("katjaBtn").textContent="Geladen ✓";setTimeout(function(){$("katjaBtn").textContent="Vorlage laden";},2000);});
 $("replay").addEventListener("click",function(){if(reduce)still();else play();});
 
 function update(restart){

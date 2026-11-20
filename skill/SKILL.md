@@ -3,7 +3,7 @@ name: markenschnitt
 description: Schneidet meine Reels in meinem Markenstil, in Edits oder direkt als Videodatei. Nutzen, wenn ich „Schneide mein neues Reel“ sage, ein Video geschnitten haben will oder nach einem Schnitt „Merk dir das“ sage.
 ---
 # Markenschnitt
-Version: 2
+Version: 3
 
 Lies vor jedem Schnitt die Datei ~/.claude/skills/markenschnitt/stil.md. Ihre Stilangaben gelten vor den Stilvorgaben in dieser Datei, die Regeln unter „Gelernt“ vor dem Grundstil. Der Abschnitt „Datenschutz“ und das Postverbot aus Schritt 11 gelten immer. Beachte Wirkung, Ansprache und Hinweise aus der Beratung in stil.md bei Hook, Abschluss und allen Schnittentscheidungen.
 
@@ -19,7 +19,7 @@ Lies vor jedem Schnitt die Datei ~/.claude/skills/markenschnitt/stil.md. Ihre St
 3. Grobschnitt: Schneide Pausen raus, die länger sind als die Pausengrenze in stil.md, dazu „äh“, „ähm“, Versprecher und abgebrochene Anläufe. Von einem doppelten Anlauf bleibt der letzte vollständige. Vor und nach jedem Satz bleibt etwa 0,15 Sekunden Luft, damit es nicht gehetzt klingt. Stell nie etwas um und lass nie Inhalt weg, außer Wiederholungen.
 4. Bild im Format aus stil.md. Das Gesicht bleibt gut im Bild. Halte oben und unten etwa 12 % frei von wichtigen Inhalten, dort liegen die Bedienelemente von Instagram.
 5. Zoom wie in stil.md. Immer als harter Schnitt, nie als Zoomfahrt. Ein Zoom gilt für einen ganzen Gedanken, danach zurück auf die normale Einstellung.
-6. Untertitel wie in stil.md, in der Sprache des Videos, Wort für Wort hervorgehoben. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.
+6. Untertitel wie in stil.md, in der Sprache des Videos, Wort für Wort hervorgehoben, wenn stil.md nichts anderes sagt. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.
 7. Hook wie in stil.md: der Satz aus dem Video, der am meisten neugierig macht, meistens der erste. Höchstens 8 Wörter, oben im Bild, in den ersten Sekunden, in meiner Schrift.
 8. Abschluss wie in stil.md: Steht dort ein Abschluss-Satz, blende ihn in den letzten 2 Sekunden ein, in Markenfarbe und meiner Schrift.
 9. Look wie in stil.md, als Ebene direkt über dem Video und unter Hook und Untertiteln, damit diese ihre Farben behalten.
@@ -31,7 +31,7 @@ Weg A: Alles nur mit den Edits-Werkzeugen. Installiere dafür nichts zusätzlich
 ## Weg B im Detail
 - Spracherkennung mit faster-whisper aus ~/.markenschnitt (Modell „small“, auf schnellen Rechnern „medium“), mit Zeitstempeln je Wort.
 - Aus den Wortzeiten eine Schnittliste bauen und mit ffmpeg bildgenau schneiden. Danach aufs Format aus stil.md bringen.
-- Untertitel als ASS-Datei mit Wort-Hervorhebung in der Markenfarbe und meiner Schrift aus ~/.markenschnitt/fonts (statische .ttf-Dateien, keine variable Schrift; fontsdir mit ausgeschriebenem Pfad), ins Bild einbrennen. Hook und Abschluss ebenfalls über die ASS-Datei.
+- Untertitel als ASS-Datei so, wie stil.md es vorgibt (Position, Hervorhebung, Kästchen), in meiner Schrift aus ~/.markenschnitt/fonts (statische .ttf-Dateien, keine variable Schrift; fontsdir mit ausgeschriebenem Pfad), ins Bild einbrennen. Hook und Abschluss ebenfalls über die ASS-Datei.
 - Zoom über Vergrößern und Zuschneiden an den Schnittstellen, Look über Farbfilter, Ton mit afftdn und loudnorm (I=-14).
 - Schreib den Ablauf einmal als Skript nach ~/.markenschnitt/schnitt.py und nutze es danach wieder. Das Skript liest alle Stilwerte bei jedem Lauf aus stil.md und enthält selbst keine. Gibt es das Skript nicht, schreib es neu.
 
