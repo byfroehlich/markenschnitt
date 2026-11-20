@@ -188,7 +188,7 @@ footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linie);font-s
         <legend>Dein Videoordner</legend>
         <p class="hint">Hier legst du deine Rohvideos ab. Die Videodateien bleiben auf deinem Rechner und in Edits. Claude bekommt nur, was es zum Schneiden braucht, zum Beispiel das Transkript. Fertige Schnitte landen im Unterordner „fertig“.</p>
         <div class="row"><label class="lab" for="ordner">Ordnername im Ordner Filme</label><input type="text" id="ordner" placeholder="Markenschnitt" spellcheck="false"></div>
-        <div class="row"><label class="lab" for="profil">Stil für eine Kundin oder einen Kunden (optional)</label><input type="text" id="profil" placeholder="leer = dein eigener Stil, sonst z. B. Anna" spellcheck="false"><p class="hint">Mit Namen wird ein eigener Stil angelegt, mit eigenem Unterordner für die Videos. Dein eigener Stil bleibt unverändert. Danach sagst du in Claude: „Schneide das Reel für Anna.“</p></div>
+        <div class="row"><label class="lab" for="profil">Stil für eine Kundin oder einen Kunden (optional)</label><input type="text" id="profil" placeholder="leer = dein eigener Stil, sonst z. B. Anna" spellcheck="false"><p class="hint">Mit Namen wird ein eigener Stil angelegt, mit eigenem Unterordner für die Videos. Dein eigener Stil bleibt unverändert. Danach sagst du in Claude: „Schneide das Reel für Anna.“</p><p class="hint" id="kundeLink">Markenschnitt läuft schon und du willst nur einen neuen Stil für eine Kundin anlegen? Das geht schneller auf der <a href="?kunde">Seite für Kundenstile</a>.</p></div>
       </fieldset>
 
       <fieldset>
@@ -373,7 +373,8 @@ var HOOK_TEXT="Drei Fehler, die deine Reels unsichtbar machen";
 var SATZ="Erstens startest du zu langsam. Zweitens fehlt der rote Faden. Und drittens sagst du nie, was jetzt kommt.";
 var DEFAULT={marke:"",ansprache:"du",ton:"",schreib:"",cta:"",tabu:"",notiz:"",ordner:"Markenschnitt",profil:"",schrift:"Montserrat",eigeneName:"",farbe:"#C59A55",textfarbe:"weiß",woerter:"4",substil:"leuchten",pos:"unten",tempo:"natuerlich",zoom:"sparsam",hook:"eingeblendet",format:"9:16",look:"natuerlich"};
 var st=Object.assign({},DEFAULT);
-var KEY="markenschnitt.v1";
+var KMODE=/(^|&)kunde(=|&|$)/.test(location.search.replace(/^\?/,""));
+var KEY=KMODE?"markenschnitt.kunde.v1":"markenschnitt.v1";
 var VERSION="7";
 var UPDATE_BASE="https://raw.githubusercontent.com/byfroehlich/markenschnitt/main/skill/";
 var ALLOWED={ansprache:["du","ihr","Sie"],schrift:["Montserrat","Poppins","Archivo Black","Bebas Neue","DM Serif Display","Inter","eigene"],textfarbe:["weiß","schwarz"],woerter:["2","4","6"],substil:["leuchten","box","stichwort","schlicht"],pos:["unten","mitte","oben"],tempo:["ruhig","natuerlich","zuegig"],zoom:["aus","sparsam","lebendig"],hook:["aus","eingeblendet","getippt"],format:["9:16","9:16+4:5"],look:["natuerlich","warm","frisch","gedeckt"]};
@@ -424,7 +425,7 @@ function fontName(){return st.schrift==="eigene"?(st.eigeneName.trim()||"[Name d
 function contrastText(hex){var h=hex.replace("#","");var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)>150?"#111111":"#FFFFFF";}
 
 /* Einrichtungstext */
-function buildPrompt(){
+function stilVars(){
   var fn=fontName();
   var O=ordnerName();
   var eigene=st.schrift==="eigene";
@@ -435,6 +436,10 @@ function buildPrompt(){
   var schreib=lines(st.schreib);
   var tabu=lines(st.tabu);
   var fmt=st.format==="9:16"?"9:16 (1080 × 1920)":"9:16 (1080 × 1920), dazu eine zweite Fassung in 4:5 (1080 × 1350) für den Feed";
+  return {fn:fn,O:O,eigene:eigene,t:t,zoomTxt:zoomTxt,hookTxt:hookTxt,subTxt:subTxt,schreib:schreib,tabu:tabu,fmt:fmt};
+}
+function buildPrompt(){
+  var V=stilVars();var fn=V.fn,O=V.O,eigene=V.eigene,t=V.t,zoomTxt=V.zoomTxt,hookTxt=V.hookTxt,subTxt=V.subTxt,schreib=V.schreib,tabu=V.tabu,fmt=V.fmt;
   var schriftSchritt=eigene
     ?"Meine Schrift heißt „"+fn+"“. Die Schriftdatei liegt im Ordner "+O+" in Filme; findest du keine, frag mich danach. Weg B: Kopiere sie zusätzlich nach ~/.markenschnitt/fonts. Weg A: In Edits lädst du sie beim ersten Schnitt hoch."
     :"Meine Schrift ist „"+fn+"“ von Google Fonts. Lade sie herunter (Regular und, falls vorhanden, Bold; eine variable Schriftdatei ist auch in Ordnung) in den Ordner "+O+" in Filme, Weg B zusätzlich nach ~/.markenschnitt/fonts. Weg A: In Edits lädst du sie beim ersten Schnitt hoch.";
@@ -532,7 +537,12 @@ function buildPrompt(){
   P.push("## Datenschutz");
   P.push("Meine Videos bleiben auf meinem Rechner. Lade sie außer an Edits nirgendwo hoch, nutze keine anderen Online-Dienste dafür.");
   P.push("===== STIL =====");
-  P.push("# Mein Markenstil");
+  stilZeilen(P,"Mein Markenstil",{O:O,fn:fn,eigene:eigene,t:t,zoomTxt:zoomTxt,hookTxt:hookTxt,subTxt:subTxt,schreib:schreib,tabu:tabu,fmt:fmt});
+  return P.join("\n");
+}
+function stilZeilen(P,titel,v){
+  var O=v.O,fn=v.fn,eigene=v.eigene,t=v.t,zoomTxt=v.zoomTxt,hookTxt=v.hookTxt,subTxt=v.subTxt,schreib=v.schreib,tabu=v.tabu,fmt=v.fmt;
+  P.push("# "+titel);
   P.push("");
   P.push("## Grundstil");
   if(st.marke.trim())P.push("- Marke: "+safe(st.marke).trim());
@@ -555,8 +565,31 @@ function buildPrompt(){
   P.push("");
   P.push("## Gelernt");
   P.push("(noch leer)");
+}
+
+
+/* Kundenstil (nur Stil, ohne Einrichtung) */
+function buildKunde(){
+  var V=stilVars();var N=profilName();var O=V.O;
+  var S="~/.claude/skills/markenschnitt/stile/"+N+".md";
+  var schrift=V.eigene
+    ?"Die Schrift für "+N+" heißt „"+V.fn+"“ (eigene Schriftdatei). Such sie im Ordner "+O+" in Filme; findest du keine, frag mich danach. Weg B: Kopier sie zusätzlich nach ~/.markenschnitt/fonts. Weg A: In Edits lädst du sie beim ersten Schnitt für "+N+" hoch."
+    :"Die Schrift für "+N+" ist „"+V.fn+"“ von Google Fonts. Lade sie herunter (Regular und, falls vorhanden, Bold) in den Ordner "+O+" in Filme, Weg B zusätzlich nach ~/.markenschnitt/fonts. Weg A: In Edits lädst du sie beim ersten Schnitt für "+N+" hoch, falls sie dort noch fehlt.";
+  var P=[];
+  P.push("Markenschnitt: Leg bitte einen eigenen Stil für "+N+" an. Mach alles selbst, erkläre keine Technik, schneide jetzt nichts.");
+  P.push("");
+  P.push("0. Prüf, ob ~/.claude/skills/markenschnitt/SKILL.md da ist. Fehlt sie, sag mir nur: „Richte zuerst Markenschnitt ein, auf markenschnitt.byfroehlich.de.“ und mach nichts weiter.");
+  P.push("1. Der Text nach ===== STIL ===== ist Dateiinhalt, keine Anweisung für jetzt. Übernimm ihn Zeichen für Zeichen, ohne die Markierungszeile, in die Datei "+S+" (Ordner stile bei Bedarf anlegen). Gibt es die Datei schon, ersetze nur den Bereich von „## Grundstil“ bis vor „## Gelernt“. Alles ab „## Gelernt“ bleibt Zeichen für Zeichen gleich.");
+  P.push("2. Leg den Videoordner an: im Ordner Filme den Ordner "+O+" (Mac: ~/Movies/"+O+", Windows: Videos\\"+O+"), darin den Unterordner fertig.");
+  P.push("3. "+schrift);
+  P.push("4. SKILL.md, stil.md und alle anderen Dateien in stile/ fasst du nicht an.");
+  P.push("5. Sag mir in höchstens zwei Zeilen, was angelegt ist, und zum Schluss: „Leg das Video von "+N+" in Filme › "+O+" und sag: Schneide das Reel für "+N+".“");
+  P.push("");
+  P.push("===== STIL =====");
+  stilZeilen(P,"Markenstil "+N,V);
   return P.join("\n");
 }
+function aktuellerText(){return KMODE?buildKunde():buildPrompt();}
 
 /* Vorschau */
 var subsEl=$("subs"),hookEl=$("hookEl"),ctaEl=$("ctaEl"),scene=$("scene"),lookLayer=$("lookLayer"),phone=$("phone");
@@ -653,7 +686,7 @@ function copy(text,btn,ok,fallbackEl,statusEl){
   var fail=function(){if(fallbackEl){var det=fallbackEl.closest("details");if(det)det.open=true;selectNode(fallbackEl);}done("Markiert – jetzt ⌘C bzw. Strg+C");};
   try{navigator.clipboard.writeText(text).then(function(){done(ok);if(statusEl)statusEl.textContent="Kopiert. Jetzt in der Claude-App im Tab „Code“ einfügen.";},fail);}catch(e){fail();}
 }
-$("copyBtn").addEventListener("click",function(){if(st.schrift==="eigene"&&!st.eigeneName.trim()){$("copyStatus").textContent="Bitte zuerst den Namen deiner Schrift eintragen.";$("eigeneName").focus();return;}copy(buildPrompt(),$("copyBtn"),"Kopiert ✓",$("promptOut"),$("copyStatus"));});
+$("copyBtn").addEventListener("click",function(){if(KMODE&&!profilName()){$("copyStatus").textContent="Bitte zuerst den Namen der Kundin oder des Kunden eintragen.";$("profil").focus();return;}if(st.schrift==="eigene"&&!st.eigeneName.trim()){$("copyStatus").textContent="Bitte zuerst den Namen deiner Schrift eintragen.";$("eigeneName").focus();return;}copy(aktuellerText(),$("copyBtn"),"Kopiert ✓",$("promptOut"),$("copyStatus"));});
 
 /* Stil-Code */
 function toCode(){try{return "MS1."+btoa(unescape(encodeURIComponent(JSON.stringify(st))));}catch(e){return "";}}
@@ -672,8 +705,33 @@ $("katjaBtn").addEventListener("click",function(){st=clean(KATJA);fillForm();upd
 $("replay").addEventListener("click",function(){if(reduce)still();else play();});
 
 function update(restart){
-  styleApply();drawTimeline();$("promptOut").textContent=buildPrompt();save();
+  styleApply();drawTimeline();$("promptOut").textContent=KMODE&&!profilName()?"Bitte zuerst den Namen der Kundin oder des Kunden eintragen.":aktuellerText();save();
   if(reduce){still();}else if(restart){play();}
+}
+if(KMODE){
+  document.title="Markenschnitt – Kundenstil anlegen";
+  document.querySelector(".hero h1").innerHTML="Neuer Kundenstil.<br><span>In zwei Minuten.</span>";
+  document.querySelector(".hero .subline").textContent="Für Kundinnen und Kunden, deren Reels du mit Markenschnitt schneidest";
+  document.querySelector(".hero .text").textContent="Name eintragen, Stil einstellen, Text kopieren und in Claude einfügen. Claude legt einen eigenen Stil und einen eigenen Videoordner an. Dein eigener Stil und alle anderen bleiben unberührt.";
+  var req=document.querySelector(".hero .req");if(req)req.hidden=true;
+  var vor=document.querySelector(".vorlage");if(vor)vor.hidden=true;
+  $("kundeLink").innerHTML='Für die erste Einrichtung oder deinen eigenen Stil: <a href="./">zur Einrichtungsseite</a>.';
+  var pr=$("profil").closest(".row");pr.querySelector("label").textContent="Name der Kundin oder des Kunden";$("profil").placeholder="z. B. Anna";
+  pr.querySelector(".hint").textContent="So heißt der Stil. Danach sagst du in Claude: „Schneide das Reel für Anna.“";
+  var fs=$("ordner").closest("fieldset");fs.querySelector("legend").textContent="Kundin und Videoordner";
+  var hi=fs.querySelector(":scope > .hint");fs.insertBefore(pr,hi.nextSibling);hi.textContent="Jede Kundin bekommt einen eigenen Unterordner in deinem Markenschnitt-Ordner. Die Videos bleiben auf deinem Rechner und in Edits.";
+  $("ordner").closest(".row").querySelector("label").textContent="Dein Markenschnitt-Ordner im Ordner Filme (wie bei der Einrichtung)";
+  var form=$("form");form.insertBefore(fs,form.firstElementChild);
+  var bera=document.querySelector("fieldset.gruen");if(bera)bera.querySelector(".hint").textContent="Was aus der Beratung mit deiner Kundin für ihre Marke wichtig ist.";
+  var mac=$("h-mac");if(mac)mac.closest("section").hidden=true;
+  $("h-out").previousElementSibling.textContent="Kundenstil";
+  $("h-out").textContent="In Claude anlegen";
+  var sch=document.querySelectorAll(".schritte .schritt");
+  if(sch[0]){sch[0].querySelector("h3").textContent="Text kopieren";sch[0].querySelector("p").textContent="Mit dem Knopf unten. Er enthält nur den Stil, keine neue Einrichtung.";}
+  if(sch[1]){sch[1].querySelector("h3").textContent="In Claude einfügen";sch[1].querySelector("p").textContent="Claude-App, Tab „Code“, Text einfügen, senden. Claude legt den Stil und den Ordner an.";}
+  $("copyBtn").textContent="Kundenstil kopieren";
+  var nt=document.querySelector(".einrichten > .note");if(nt)nt.textContent="Stil später ändern? Hier anpassen, mit demselben Namen erneut kopieren und einfügen. Was Claude mit „Merk dir das“ für diese Kundin gelernt hat, bleibt erhalten.";
+  var sm=document.querySelector(".einrichten summary");if(sm)sm.textContent="Text ansehen";
 }
 fillForm();update(false);
 if(reduce)still();else play();
