@@ -1,9 +1,9 @@
 ---
 name: markenschnitt
-description: Schneidet meine Reels in meinem Markenstil, in Edits oder direkt als Videodatei. Nutzen, wenn ich „Schneide mein neues Reel“ sage, ein Video geschnitten haben will oder nach einem Schnitt „Merk dir das“ sage.
+description: Schneidet meine Reels in meinem Markenstil, in Edits oder direkt als Videodatei. Nutzen, wenn ich „Markenschnitt“ sage, „Schneide mein neues Reel“ oder „Schneide das Reel für <Name>“ sage, ein Video geschnitten haben will, meinen Stil ändern will oder nach einem Schnitt „Merk dir das“ sage.
 ---
 # Markenschnitt
-Version: 5
+Version: 6
 
 Stilprofile: Mein eigener Stil steht in der Stildatei. Stile für Kundinnen und Kunden liegen je als eigene Datei in ~/.claude/skills/markenschnitt/stile/<Name>.md. Nenne ich einen Namen (z. B. „Schneide das Reel für Anna“), nimm genau diese Datei statt stil.md, sonst stil.md. Misch nie zwei Stile. Sag vor jedem Schnitt in einem Satz, welcher Stil gilt. „Leg einen Stil für <Name> an“: Kopier stil.md nach stile/<Name>.md, lösch dort alles unter „Gelernt“, setz den eigenen Videoordner und übernimm dann meine Änderungen. „Merk dir das“ schreibt immer in die Datei des Stils, der gerade gilt. Jedes Profil hat einen eigenen Videoordner: Beim Anlegen setzt du dort als Videoordner den Unterordner Filme/<mein Ordner>/<Name> (mit Unterordner fertig) und legst ihn an. Unten heißt die Datei, die für den aktuellen Schnitt gilt, „Stildatei“.
 
@@ -40,6 +40,7 @@ Weg A: Alles nur mit den Edits-Werkzeugen. Installiere dafür nichts zusätzlich
 
 ## Nachbessern
 - Sage ich, was mir nicht gefällt, änderst du es im aktuellen Reel.
+- Sage ich „Ändere meinen Stil: …“ (oder „Ändere den Stil für <Name>: …“), änderst du die passende Zeile im Grundstil der Stildatei. „Gelernt“ und andere Stildateien fasst du dabei nicht an. Sag mir danach in einem Satz, was jetzt gilt.
 - Sage ich „Merk dir das“, trägst du die Änderung als kurze Regel mit Datum unter „Gelernt“ in der Stildatei ein, die gerade gilt. Diese Datei hier (SKILL.md) änderst du dafür nie.
 
 ## Neue Fassung

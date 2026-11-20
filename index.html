@@ -167,7 +167,7 @@ footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linie);font-s
   <div class="grid">
     <form class="panel" id="form" autocomplete="off">
 
-      <div class="vorlage"><p><b>Vorlage: Katjas Reel-Stil.</b> Weiße Serifenschrift oben im Bild, Kernwörter in Pink, ruhig, natürlich, ohne Kästchen. Lädt alle Einstellungen, danach kannst du alles anpassen.</p><button type="button" class="btn" id="katjaBtn">Vorlage laden</button></div>
+      <div class="vorlage"><p><b>Vorlage: Katjas Reel-Stil.</b> Weiße Serifenschrift oben im Bild, das gesprochene Wort leuchtet in deiner Farbe, ruhig, natürlich, ohne Kästchen. Lädt alle Einstellungen, danach kannst du alles anpassen.</p><button type="button" class="btn" id="katjaBtn">Vorlage laden</button></div>
 
       <fieldset class="gruen">
         <legend>Aus der Markenberatung</legend>
@@ -374,7 +374,7 @@ var SATZ="Erstens startest du zu langsam. Zweitens fehlt der rote Faden. Und dri
 var DEFAULT={marke:"",ansprache:"du",ton:"",schreib:"",cta:"",tabu:"",notiz:"",ordner:"Markenschnitt",profil:"",schrift:"Montserrat",eigeneName:"",farbe:"#C59A55",textfarbe:"weiß",woerter:"4",substil:"leuchten",pos:"unten",tempo:"natuerlich",zoom:"sparsam",hook:"eingeblendet",format:"9:16",look:"natuerlich"};
 var st=Object.assign({},DEFAULT);
 var KEY="markenschnitt.v1";
-var VERSION="5";
+var VERSION="6";
 var UPDATE_BASE="https://raw.githubusercontent.com/byfroehlich/markenschnitt/main/skill/";
 var ALLOWED={ansprache:["du","ihr","Sie"],schrift:["Montserrat","Poppins","Archivo Black","Bebas Neue","DM Serif Display","Inter","eigene"],textfarbe:["weiß","schwarz"],woerter:["2","4","6"],substil:["leuchten","box","stichwort","schlicht"],pos:["unten","mitte","oben"],tempo:["ruhig","natuerlich","zuegig"],zoom:["aus","sparsam","lebendig"],hook:["aus","eingeblendet","getippt"],format:["9:16","9:16+4:5"],look:["natuerlich","warm","frisch","gedeckt"]};
 function clean(o){var r=Object.assign({},DEFAULT);if(!o||typeof o!=="object")return r;Object.keys(DEFAULT).forEach(function(k){var v=o[k];if(typeof v!=="string")return;if(ALLOWED[k]){if(ALLOWED[k].indexOf(v)>=0)r[k]=v;}else if(k==="farbe"){if(/^#[0-9A-Fa-f]{6}$/.test(v))r[k]=v.toUpperCase();}else{r[k]=v.slice(0,600);}});return r;}
@@ -467,11 +467,14 @@ function buildPrompt(){
   P.push("1. Schreib die Datei ~/.claude/skills/markenschnitt/SKILL.md. In der ersten Zeile beginnt ohne Leerzeile davor dieser Kopf:");
   P.push("---");
   P.push("name: markenschnitt");
-  P.push("description: Schneidet meine Reels in meinem Markenstil, in Edits oder direkt als Videodatei. Nutzen, wenn ich „Schneide mein neues Reel“ sage, ein Video geschnitten haben will oder nach einem Schnitt „Merk dir das“ sage.");
+  P.push("description: Schneidet meine Reels in meinem Markenstil, in Edits oder direkt als Videodatei. Nutzen, wenn ich „Markenschnitt“ sage, „Schneide mein neues Reel“ oder „Schneide das Reel für <Name>“ sage, ein Video geschnitten haben will, meinen Stil ändern will oder nach einem Schnitt „Merk dir das“ sage.");
   P.push("---");
   P.push("Darunter kommt alles zwischen ===== SKILL ===== und ===== STIL =====. Eine vorhandene SKILL.md ersetzt du damit vollständig.");
   P.push("2. Die Datei "+stilDatei()+" (Ordner bei Bedarf anlegen; eine andere Stildatei fasst du nicht an): Gibt es sie noch nicht, schreib alles nach ===== STIL ===== hinein. Gibt es sie schon, ersetze nur den Bereich von „## Grundstil“ bis vor „## Gelernt“. Alles ab „## Gelernt“ bis zum Dateiende bleibt Zeichen für Zeichen gleich. Fehlt „## Gelernt“, häng den Abschnitt aus dem Text unten an.");
   P.push("3. Gibt es ~/.markenschnitt/schnitt.py schon, lösch sie. Sie wird beim nächsten Schnitt nach dieser Fassung neu geschrieben.");
+  P.push("");
+  P.push("SCHRITT 4B: ANDERE SCHNITT-SKILLS");
+  P.push("Prüf, ob es unter ~/.claude/skills einen anderen Skill gibt, der ebenfalls Reels schneidet (z. B. „cutterin“). Wenn ja: Sag mir in einem Satz, dass beide auf denselben Satz hören und sich sonst in die Quere kommen, und frag, ob du ihn abschalten sollst. Nur bei Ja: Verschieb seinen Ordner nach ~/.claude/skills-aus/ (nicht löschen, so lässt er sich jederzeit zurückholen).");
   P.push("");
   P.push("SCHRITT 5: FERTIG");
   P.push("Sag mir in höchstens drei Zeilen, ob alles läuft. Bitte mich dann, eine neue Sitzung zu öffnen, damit Markenschnitt (und bei Weg A die Edits-Werkzeuge) geladen sind. Schneide in dieser Sitzung noch nichts. Sag zum Schluss: „Leg dein Video in Filme › "+O+", öffne eine neue Sitzung und sag: "+(profilName()?"Schneide das Reel für "+profilName()+".":"Schneide mein neues Reel.")+"“");
@@ -515,6 +518,7 @@ function buildPrompt(){
   P.push("");
   P.push("## Nachbessern");
   P.push("- Sage ich, was mir nicht gefällt, änderst du es im aktuellen Reel.");
+  P.push("- Sage ich „Ändere meinen Stil: …“ (oder „Ändere den Stil für <Name>: …“), änderst du die passende Zeile im Grundstil der Stildatei. „Gelernt“ und andere Stildateien fasst du dabei nicht an. Sag mir danach in einem Satz, was jetzt gilt.");
   P.push("- Sage ich „Merk dir das“, trägst du die Änderung als kurze Regel mit Datum unter „Gelernt“ in der Stildatei ein, die gerade gilt. Diese Datei hier (SKILL.md) änderst du dafür nie.");
   P.push("");
   P.push("## Neue Fassung");
@@ -661,7 +665,7 @@ $("codeLoad").addEventListener("click",function(){
     fillForm();update(true);$("codeStatus").textContent="Stil geladen.";
   }catch(e){$("codeStatus").textContent="Der Code passt nicht. Bitte den ganzen Stil-Code einfügen, er beginnt mit MS1.";}
 });
-var KATJA={marke:"Katja Schlecht Brand Consulting",ansprache:"du",ton:"klar, warm, nahbar. Identität statt Inszenierung",schreib:"",cta:"",tabu:"Keine Emojis in den Untertiteln.\nRuhig schneiden, Katja nie hetzen.",notiz:"Vorlage aus ihren bisherigen Reels: Untertitel in weißer, fetter Serifenschrift oben im Bild, zwei Zeilen, ohne Kästchen, die Kernwörter pink hervorgehoben. Natürliche Aufnahmen, oft draußen. Hat sie in Edits eine bestimmte Schrift, gilt diese statt DM Serif Display.",ordner:"Markenschnitt",profil:"",schrift:"DM Serif Display",eigeneName:"",farbe:"#E8458B",textfarbe:"weiß",woerter:"4",substil:"stichwort",pos:"oben",tempo:"natuerlich",zoom:"sparsam",hook:"aus",format:"9:16",look:"natuerlich"};
+var KATJA={marke:"Katja Schlecht Brand Consulting",ansprache:"du",ton:"klar, warm, nahbar. Identität statt Inszenierung",schreib:"",cta:"",tabu:"Keine Emojis in den Untertiteln.\nRuhig schneiden, Katja nie hetzen.",notiz:"Vorlage aus ihren bisherigen Reels: Untertitel in weißer, fetter Serifenschrift oben im Bild, zwei Zeilen, ohne Kästchen, das gerade gesprochene Wort leuchtet in der Markenfarbe auf. Natürliche Aufnahmen, oft draußen. Hat sie in Edits eine bestimmte Schrift, gilt diese statt DM Serif Display.",ordner:"Markenschnitt",profil:"",schrift:"DM Serif Display",eigeneName:"",farbe:"#C59A55",textfarbe:"weiß",woerter:"4",substil:"leuchten",pos:"oben",tempo:"natuerlich",zoom:"sparsam",hook:"aus",format:"9:16",look:"natuerlich"};
 $("katjaBtn").addEventListener("click",function(){st=clean(KATJA);fillForm();update(true);$("katjaBtn").textContent="Geladen ✓";setTimeout(function(){$("katjaBtn").textContent="Vorlage laden";},2000);});
 $("replay").addEventListener("click",function(){if(reduce)still();else play();});
 
