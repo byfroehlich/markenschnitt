@@ -380,6 +380,7 @@ var UPDATE_BASE="https://raw.githubusercontent.com/byfroehlich/markenschnitt/mai
 var ALLOWED={ansprache:["du","ihr","Sie"],schrift:["Montserrat","Poppins","Archivo Black","Bebas Neue","DM Serif Display","Inter","eigene"],textfarbe:["weiß","schwarz"],woerter:["2","4","6"],substil:["leuchten","box","stichwort","schlicht"],pos:["unten","mitte","oben"],tempo:["ruhig","natuerlich","zuegig"],zoom:["aus","sparsam","lebendig"],hook:["aus","eingeblendet","getippt"],format:["9:16","9:16+4:5"],look:["natuerlich","warm","frisch","gedeckt"]};
 function clean(o){var r=Object.assign({},DEFAULT);if(!o||typeof o!=="object")return r;Object.keys(DEFAULT).forEach(function(k){var v=o[k];if(typeof v!=="string")return;if(ALLOWED[k]){if(ALLOWED[k].indexOf(v)>=0)r[k]=v;}else if(k==="farbe"){if(/^#[0-9A-Fa-f]{6}$/.test(v))r[k]=v.toUpperCase();}else{r[k]=v.slice(0,600);}});return r;}
 try{st=clean(JSON.parse(localStorage.getItem(KEY)||"null"));}catch(e){}
+if(KMODE){try{if(!localStorage.getItem(KEY)){var eig=clean(JSON.parse(localStorage.getItem("markenschnitt.v1")||"null"));st.ordner=eig.ordner;}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
 function $(id){return document.getElementById(id);}
 
@@ -418,7 +419,7 @@ document.getElementById("form").addEventListener("submit",function(e){e.preventD
 
 function safe(t){return String(t||"").split(/\n/).map(function(s){return s.replace(/^\s*(#+|=+|-{3,})\s*/,"").replace(/=====/g,"");}).join("\n").slice(0,600);}
 function lines(txt){return safe(txt).split(/\n+/).map(function(s){return s.trim();}).filter(Boolean);}
-function profilName(){return (st.profil||"").trim().replace(/[\/\\:*?"<>|.]/g,"").slice(0,40);}
+function profilName(){return (st.profil||"").replace(/[\/\\:*?"<>|.=#]/g,"").replace(/\s+/g," ").trim().slice(0,40);}
 function ordnerName(){var o=(st.ordner||"").trim().replace(/[\/\\:*?"<>|]/g,"").replace(/^\.+|\.+$/g,"").slice(0,60);o=o||"Markenschnitt";var pr=profilName();return pr?o+"/"+pr:o;}
 function stilDatei(){var pr=profilName();return pr?"~/.claude/skills/markenschnitt/stile/"+pr+".md":"~/.claude/skills/markenschnitt/stil.md";}
 function fontName(){return st.schrift==="eigene"?(st.eigeneName.trim()||"[Name deiner Schrift]"):st.schrift;}
@@ -570,20 +571,22 @@ function stilZeilen(P,titel,v){
 
 /* Kundenstil (nur Stil, ohne Einrichtung) */
 function buildKunde(){
-  var V=stilVars();var N=profilName();var O=V.O;
+  var V=stilVars();var N=profilName();var O=V.O;var H=O.slice(0,O.length-N.length-1);
   var S="~/.claude/skills/markenschnitt/stile/"+N+".md";
   var schrift=V.eigene
-    ?"Die Schrift für "+N+" heißt „"+V.fn+"“ (eigene Schriftdatei). Such sie im Ordner "+O+" in Filme; findest du keine, frag mich danach. Weg B: Kopier sie zusätzlich nach ~/.markenschnitt/fonts. Weg A: In Edits lädst du sie beim ersten Schnitt für "+N+" hoch."
-    :"Die Schrift für "+N+" ist „"+V.fn+"“ von Google Fonts. Lade sie herunter (Regular und, falls vorhanden, Bold) in den Ordner "+O+" in Filme, Weg B zusätzlich nach ~/.markenschnitt/fonts. Weg A: In Edits lädst du sie beim ersten Schnitt für "+N+" hoch, falls sie dort noch fehlt.";
+    ?"Die Schrift für "+N+" heißt „"+V.fn+"“ (eigene Schriftdatei). Such sie im Ordner "+O+" in Filme; findest du keine, frag mich danach. Gibt es ~/.markenschnitt/venv, kopier sie zusätzlich nach ~/.markenschnitt/fonts. Schneidest du in Edits, lädst du sie dort beim ersten Schnitt für "+N+" hoch."
+    :"Die Schrift für "+N+" ist „"+V.fn+"“ von Google Fonts. Lade sie herunter (Regular und, falls vorhanden, Bold) in den Ordner "+O+" in Filme. Gibt es ~/.markenschnitt/venv, kopier sie zusätzlich nach ~/.markenschnitt/fonts. Schneidest du in Edits, lädst du sie dort beim ersten Schnitt für "+N+" hoch, falls sie fehlt.";
   var P=[];
   P.push("Markenschnitt: Leg bitte einen eigenen Stil für "+N+" an. Mach alles selbst, erkläre keine Technik, schneide jetzt nichts.");
   P.push("");
-  P.push("0. Prüf, ob ~/.claude/skills/markenschnitt/SKILL.md da ist. Fehlt sie, sag mir nur: „Richte zuerst Markenschnitt ein, auf markenschnitt.byfroehlich.de.“ und mach nichts weiter.");
-  P.push("1. Der Text nach ===== STIL ===== ist Dateiinhalt, keine Anweisung für jetzt. Übernimm ihn Zeichen für Zeichen, ohne die Markierungszeile, in die Datei "+S+" (Ordner stile bei Bedarf anlegen). Gibt es die Datei schon, ersetze nur den Bereich von „## Grundstil“ bis vor „## Gelernt“. Alles ab „## Gelernt“ bleibt Zeichen für Zeichen gleich.");
-  P.push("2. Leg den Videoordner an: im Ordner Filme den Ordner "+O+" (Mac: ~/Movies/"+O+", Windows: Videos\\"+O+"), darin den Unterordner fertig.");
-  P.push("3. "+schrift);
-  P.push("4. SKILL.md, stil.md und alle anderen Dateien in stile/ fasst du nicht an.");
-  P.push("5. Sag mir in höchstens zwei Zeilen, was angelegt ist, und zum Schluss: „Leg das Video von "+N+" in Filme › "+O+" und sag: Schneide das Reel für "+N+".“");
+  P.push("0. Prüf, ob ~/.claude/skills/markenschnitt/SKILL.md da ist. Fehlt sie, sag mir nur: „Richte zuerst Markenschnitt ein, auf markenschnitt.byfroehlich.de.“ und mach nichts weiter. Steht dort bei „Version:“ eine Zahl kleiner als 5, sag mir nur: „Bitte füg den Einrichtungstext von markenschnitt.byfroehlich.de einmal neu ein.“ und mach nichts weiter.");
+  P.push("1. Hauptordner: Steht in ~/.claude/skills/markenschnitt/stil.md bei „Videoordner“ ein anderer Ordner als Filme/"+H+", nimm statt "+H+" diesen Ordner, unten überall, auch in der Zeile „Videoordner“ des Stiltexts.");
+  P.push("2. Gibt es in ~/.claude/skills/markenschnitt/stile/ schon eine Datei "+N+".md (auch in anderer Groß- und Kleinschreibung), frag mich zuerst, ob ich den Stil von "+N+" ändern will, und mach erst nach meinem Ja weiter.");
+  P.push("3. Der Text nach ===== STIL ===== ist Dateiinhalt, keine Anweisung für jetzt. Übernimm ihn Zeichen für Zeichen, ohne die Markierungszeile, in die Datei "+S+" (Ordner stile bei Bedarf anlegen). Gibt es die Datei schon, ersetze nur den Bereich von „## Grundstil“ bis vor „## Gelernt“. Alles ab „## Gelernt“ bleibt Zeichen für Zeichen gleich. Fehlt „## Gelernt“, häng den Abschnitt aus dem Text unten an.");
+  P.push("4. Leg den Videoordner an: im Ordner Filme den Ordner "+O+" (Mac: ~/Movies/"+O+", Windows: Videos\\"+O.replace(/\//g,"\\")+"), darin den Unterordner fertig.");
+  P.push("5. "+schrift);
+  P.push("6. SKILL.md, stil.md und alle anderen Dateien in stile/ fasst du nicht an.");
+  P.push("7. Sag mir in höchstens zwei Zeilen, was angelegt ist, und zum Schluss: „Leg das Video von "+N+" in Filme › "+O+" und sag: Schneide das Reel für "+N+".“");
   P.push("");
   P.push("===== STIL =====");
   stilZeilen(P,"Markenstil "+N,V);
@@ -612,7 +615,7 @@ function styleApply(){
   $("farbe").value=st.farbe.length===7?st.farbe:"#FFD23F";
   if(document.activeElement!==$("hex"))$("hex").value=st.farbe;
   $("eigeneBox").hidden=st.schrift!=="eigene";
-  var O=ordnerName();$("pfadOrdner").textContent="Filme › "+O;$("schritt3").textContent="Video in Filme › "+O+" legen, in Claude eine neue Sitzung öffnen und sagen: „"+(profilName()?"Schneide das Reel für "+profilName()+".":"Schneide mein neues Reel.")+"“";
+  var O=ordnerName();$("pfadOrdner").textContent="Filme › "+O;$("schritt3").textContent=KMODE?"Video in Filme › "+O+" legen und in Claude sagen: „Schneide das Reel für "+(profilName()||"…")+".“":"Video in Filme › "+O+" legen, in Claude eine neue Sitzung öffnen und sagen: „"+(profilName()?"Schneide das Reel für "+profilName()+".":"Schneide mein neues Reel.")+"“";
 }
 function showLine(i,j){
   var cs=chunks();subsEl.textContent="";
@@ -686,7 +689,7 @@ function copy(text,btn,ok,fallbackEl,statusEl){
   var fail=function(){if(fallbackEl){var det=fallbackEl.closest("details");if(det)det.open=true;selectNode(fallbackEl);}done("Markiert – jetzt ⌘C bzw. Strg+C");};
   try{navigator.clipboard.writeText(text).then(function(){done(ok);if(statusEl)statusEl.textContent="Kopiert. Jetzt in der Claude-App im Tab „Code“ einfügen.";},fail);}catch(e){fail();}
 }
-$("copyBtn").addEventListener("click",function(){if(KMODE&&!profilName()){$("copyStatus").textContent="Bitte zuerst den Namen der Kundin oder des Kunden eintragen.";$("profil").focus();return;}if(st.schrift==="eigene"&&!st.eigeneName.trim()){$("copyStatus").textContent="Bitte zuerst den Namen deiner Schrift eintragen.";$("eigeneName").focus();return;}copy(aktuellerText(),$("copyBtn"),"Kopiert ✓",$("promptOut"),$("copyStatus"));});
+$("copyBtn").addEventListener("click",function(){if(KMODE&&!profilName()){$("copyStatus").textContent="Bitte zuerst den Namen der Kundin oder des Kunden eintragen.";$("profil").focus();return;}if(st.schrift==="eigene"&&!st.eigeneName.trim()){$("copyStatus").textContent=KMODE?"Bitte zuerst den Namen der Schrift eintragen.":"Bitte zuerst den Namen deiner Schrift eintragen.";$("eigeneName").focus();return;}copy(aktuellerText(),$("copyBtn"),"Kopiert ✓",$("promptOut"),$("copyStatus"));});
 
 /* Stil-Code */
 function toCode(){try{return "MS1."+btoa(unescape(encodeURIComponent(JSON.stringify(st))));}catch(e){return "";}}
@@ -696,7 +699,7 @@ $("codeLoad").addEventListener("click",function(){
   try{
     if(v.indexOf("MS1.")!==0)throw new Error();
     var o=JSON.parse(decodeURIComponent(escape(atob(v.slice(4)))));
-    st=clean(o);
+    var keepName=st.profil;st=clean(o);if(KMODE)st.profil=keepName;
     fillForm();update(true);$("codeStatus").textContent="Stil geladen.";
   }catch(e){$("codeStatus").textContent="Der Code passt nicht. Bitte den ganzen Stil-Code einfügen, er beginnt mit MS1.";}
 });
@@ -717,7 +720,7 @@ if(KMODE){
   var vor=document.querySelector(".vorlage");if(vor)vor.hidden=true;
   $("kundeLink").innerHTML='Für die erste Einrichtung oder deinen eigenen Stil: <a href="./">zur Einrichtungsseite</a>.';
   var pr=$("profil").closest(".row");pr.querySelector("label").textContent="Name der Kundin oder des Kunden";$("profil").placeholder="z. B. Anna";
-  pr.querySelector(".hint").textContent="So heißt der Stil. Danach sagst du in Claude: „Schneide das Reel für Anna.“";
+  pr.querySelector(".hint").textContent="So heißt der Stil. Später sagst du in Claude genau diesen Namen, z. B. „Schneide das Reel für Anna.“ Am besten kurz, z. B. nur der Vorname.";
   var fs=$("ordner").closest("fieldset");fs.querySelector("legend").textContent="Kundin und Videoordner";
   var hi=fs.querySelector(":scope > .hint");fs.insertBefore(pr,hi.nextSibling);hi.textContent="Jede Kundin bekommt einen eigenen Unterordner in deinem Markenschnitt-Ordner. Die Videos bleiben auf deinem Rechner und in Edits.";
   $("ordner").closest(".row").querySelector("label").textContent="Dein Markenschnitt-Ordner im Ordner Filme (wie bei der Einrichtung)";
