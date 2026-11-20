@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>Markenschnitt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+/* Layout: dunkle Bühne mit warmen Farbwolken, zentrierter Auftakt, darunter Einstell-Kacheln links und das Handy als Vorschau rechts, am Ende „Was auf deinem Mac passiert“ und Einrichten. Bewusst nur ein dunkles Erscheinungsbild. */
+:root{
+  --bg:#0F0D0A; --text:#FFF9F0; --weiss:#FFFFFF; --gold:#C59A55; --gold-hell:#D9AF67; --gruen:#19A786;
+  --kachel:#1C1710; --kachel-2:#261E11; --linie:rgba(255,249,240,.22); --leise:rgba(255,249,240,.66); --btn-text:#121212;
+  --font:"Montserrat","Avenir Next","Segoe UI",Arial,sans-serif;
+  --radius-kachel:clamp(2rem,1.6rem + 1.6vw,3.25rem);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.6;font-weight:400}
+.buehne{position:relative;isolation:isolate}
+.wolke{position:absolute;z-index:-1;pointer-events:none;filter:blur(2px)}
+.wolke::after{content:"";position:absolute;inset:0;border-radius:inherit;opacity:.35;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+.wolke--oben{top:-120px;right:-160px;width:520px;height:560px;border-radius:58% 42% 46% 54% / 52% 48% 52% 48%;
+  background:radial-gradient(60% 55% at 35% 35%,#F2C14B 0%,rgba(242,193,75,.85) 30%,transparent 70%),radial-gradient(70% 60% at 60% 70%,#E24FC2 0%,rgba(226,79,194,.8) 40%,transparent 75%);opacity:.75}
+.wolke--links{top:520px;left:-220px;width:360px;height:720px;border-radius:40% 60% 55% 45% / 35% 45% 55% 65%;
+  background:linear-gradient(200deg,#7B3CF0 0%,#C552D8 45%,#F09A6A 100%);opacity:.55}
+.wolke--unten{bottom:160px;right:-200px;width:420px;height:420px;border-radius:50% 50% 45% 55%;
+  background:radial-gradient(circle at 40% 40%,#F2C14B,rgba(226,79,194,.7) 55%,transparent 72%);opacity:.45}
+.wrap{max-width:81rem;margin:0 auto;padding-block:clamp(40px,6vw,88px) 72px;padding-left:max(20px, env(safe-area-inset-left, 0px));padding-right:max(20px, env(safe-area-inset-right, 0px))}
+h1,h2,h3{font-weight:700;text-transform:uppercase;letter-spacing:.045em;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.3rem,1.3rem + 4.4vw,4.2rem)}
+h2{font-size:clamp(1.4rem,1.15rem + 1.1vw,2.1rem)}
+h3{font-size:1rem;letter-spacing:.08em}
+p{margin:0}
+.eyebrow{display:flex;align-items:center;gap:1.25rem;font-size:.95rem;text-transform:uppercase;letter-spacing:.18em;color:var(--text)}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--linie)}
+.eyebrow--mitte{justify-content:center}
+.eyebrow--mitte::before{content:"";flex:0 1 80px;height:1px;background:var(--linie)}
+.eyebrow--mitte::after{flex:0 1 80px}
+.hero{text-align:center;display:grid;gap:22px;justify-items:center;margin-bottom:clamp(48px,7vw,96px)}
+.hero h1 span{color:var(--gold)}
+.subline{font-size:clamp(1rem,.9rem + .5vw,1.4rem);font-weight:500;text-transform:uppercase;letter-spacing:.05em;line-height:1.35;max-width:34em}
+.hero p.text{max-width:40rem;color:var(--leise);font-size:1.05rem}
+.req{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.chip{font-size:.85rem;border:1px solid var(--linie);border-radius:999px;padding:6px 16px;color:var(--leise)}
+.chip b{color:var(--text);font-weight:500}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:clamp(24px,3vw,48px);align-items:start}
+@media (max-width:940px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{display:grid;gap:22px;min-width:0}
+fieldset{border:0;background:var(--kachel);border-radius:var(--radius-kachel) 0 0 0;padding:clamp(22px,2.4vw,36px);margin:0;display:grid;gap:18px;min-width:0}
+fieldset.gruen{background:linear-gradient(115deg,rgba(25,167,134,.55) 0%,var(--kachel) 70%)}
+legend{float:left;width:100%;padding:0;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:1.05rem}
+legend+*{clear:both}
+.hint{font-size:.9rem;color:var(--leise)}
+.row{display:grid;gap:8px;min-width:0}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.lab{font-size:.78rem;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--leise)}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:.95rem;color:var(--text);background:rgba(255,249,240,.04);border:1px solid var(--linie);border-radius:14px;padding:11px 14px}
+input::placeholder,textarea::placeholder{color:rgba(255,249,240,.38)}
+textarea{min-height:70px;resize:vertical}
+select option{background:#1C1710}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt span{display:inline-flex;flex-direction:column;gap:1px;border:1px solid var(--linie);border-radius:999px;padding:8px 18px;font-size:.92rem;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.opt span small{font-size:.74rem;color:var(--leise)}
+.opt:hover span{border-color:rgba(197,154,85,.6)}
+.opt input:checked+span{border-color:var(--gold);color:var(--gold-hell);background:rgba(197,154,85,.1)}
+.opt input:focus-visible+span{outline:2px solid var(--gold);outline-offset:3px}
+.fontopt span{font-size:1.05rem;border-radius:14px}
+.swatches{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.sw{width:34px;height:34px;border-radius:50%;border:3px solid var(--kachel);box-shadow:0 0 0 1px var(--linie);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--gold)}
+.hexrow{display:flex;gap:10px;align-items:center}
+.hexrow input[type=color]{width:44px;height:40px;border:1px solid var(--linie);border-radius:12px;background:transparent;padding:3px}
+.hexrow input[type=text]{width:130px;letter-spacing:.05em}
+/* Vorschau */
+.side{position:sticky;top:calc(env(safe-area-inset-top, 0px) + 20px);display:grid;gap:16px;justify-items:center}
+@media (max-width:940px){.side{position:static}}
+.phone{width:min(300px,100%);aspect-ratio:9/16;border-radius:38px;border:9px solid #000;background:#000;position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,249,240,.12)}
+.scene{position:absolute;inset:0;transition:transform .12s linear;transform-origin:50% 42%}
+.scene .bgfill{position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 100%,#4A4237 0%,#2A241D 55%,#17130E 100%)}
+.scene .shelf{position:absolute;left:6%;right:58%;top:18%;height:3px;background:#6F6250;opacity:.6;box-shadow:0 40px 0 #6F6250}
+.scene .plant{position:absolute;right:8%;top:22%;width:22%;height:22%;border-radius:50% 50% 45% 45%;background:radial-gradient(circle at 40% 40%,#4F7A5E,#2C4A37)}
+.scene .head{position:absolute;left:50%;top:30%;width:34%;aspect-ratio:1/1.18;transform:translateX(-50%);border-radius:50% 50% 46% 46%;background:radial-gradient(circle at 45% 38%,#E7BFA2,#B98366 70%)}
+.scene .hair{position:absolute;left:50%;top:27.5%;width:40%;height:22%;transform:translateX(-50%);border-radius:50% 50% 30% 30%;background:#7A5132}
+.scene .body{position:absolute;left:50%;bottom:-6%;width:78%;height:40%;transform:translateX(-50%);border-radius:48% 48% 0 0;background:radial-gradient(circle at 50% 20%,#2F6F63,#1A3F38)}
+.look{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light}
+.hook{position:absolute;left:8%;right:8%;top:9%;text-align:center;color:#fff;font-size:19px;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.45);min-height:1.2em}
+.hook .cursor{display:inline-block;width:2px;height:1em;background:#fff;vertical-align:-2px;margin-left:2px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.subs{position:absolute;left:6%;right:6%;text-align:center;font-size:22px;line-height:1.15;font-weight:700}
+.subs.pos-unten{bottom:20%}
+.subs.pos-mitte{top:56%}
+.subs span{display:inline-block;margin:0 .14em;color:var(--subtext,#fff);text-shadow:0 2px 6px rgba(0,0,0,.5)}
+.subs.box span{background:var(--boxbg,rgba(0,0,0,.55));padding:0 .18em;border-radius:4px;text-shadow:none}
+.subs span.on{color:var(--brand)}
+.subs.box span.on{background:var(--brand);color:var(--brandtext,#111)}
+.cta{position:absolute;left:10%;right:10%;bottom:9%;text-align:center;background:var(--brand);color:var(--brandtext,#111);border-radius:999px;padding:8px 10px;font-size:14px;font-weight:700;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
+.cta.show{opacity:1;transform:none}
+.ig{position:absolute;right:4%;bottom:16%;display:grid;gap:12px;opacity:.55}
+.ig i{width:20px;height:20px;border-radius:50%;border:2px solid #fff;display:block}
+.timeline{width:min(300px,100%);display:grid;gap:6px}
+.tl-head{display:flex;justify-content:space-between;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--leise);font-variant-numeric:tabular-nums}
+.tl{height:20px;border-radius:999px;background:rgba(255,249,240,.08);position:relative;overflow:hidden}
+.tl b{position:absolute;top:3px;bottom:3px;background:var(--gold);border-radius:3px}
+.tl.before b.cut{background:transparent;outline:1px dashed rgba(255,249,240,.4);outline-offset:-1px}
+.preview-note{font-size:.78rem;color:var(--leise);width:min(300px,100%);text-align:center}
+.btn,.replay{font:inherit;font-size:.78rem;font-weight:500;text-transform:uppercase;letter-spacing:.14em;background:transparent;color:var(--text);border:1px solid var(--linie);border-radius:999px;padding:9px 18px;cursor:pointer}
+.btn:hover,.replay:hover{border-color:var(--gold);color:var(--gold-hell)}
+.button{font:inherit;font-weight:500;font-size:.95rem;text-transform:uppercase;letter-spacing:.14em;background:var(--gold);color:var(--btn-text);border:0;border-radius:999px;padding:1em 2em;cursor:pointer;transition:background .2s,transform .2s}
+.button:hover{background:var(--gold-hell);transform:translateY(-1px)}
+/* Abschnitte unten */
+.abschnitt{margin-top:clamp(64px,8vw,120px);display:grid;gap:28px}
+.kacheln{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.kachel{background:var(--kachel);border-radius:var(--radius-kachel) 0 0 0;padding:28px 26px;display:grid;gap:10px;align-content:start}
+.kachel .pfad{font-size:.8rem;letter-spacing:.04em;color:var(--gold-hell);word-break:break-word}
+.kachel p{color:var(--leise);font-size:.95rem}
+.kachel--gruen{background:linear-gradient(115deg,rgba(25,167,134,.6) 0%,var(--kachel) 75%)}
+.schritte{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.schritt{border-top:1px solid var(--gold);padding-top:14px;display:grid;gap:6px}
+.schritt .n{font-size:.78rem;text-transform:uppercase;letter-spacing:.18em;color:var(--gold)}
+.schritt p{color:var(--leise);font-size:.95rem}
+.einrichten{display:grid;gap:16px;justify-items:start}
+.status{font-size:.9rem;color:var(--gold-hell);min-height:1.3em}
+details{border:1px solid var(--linie);border-radius:18px;background:rgba(255,249,240,.02);width:100%}
+details summary{cursor:pointer;padding:14px 20px;font-size:.8rem;text-transform:uppercase;letter-spacing:.14em}
+pre{margin:0;padding:0 20px 20px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12.5px;line-height:1.55;max-height:460px;overflow:auto;color:var(--leise)}
+.note{border-left:2px solid var(--gold);padding:6px 16px;font-size:.92rem;color:var(--leise);max-width:60rem}
+.phrases{display:grid;gap:10px}
+.phrase{display:flex;gap:12px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--linie);padding:10px 0}
+.phrase q{quotes:"„" "“";min-width:0}
+.code-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;width:100%}
+.code-row input{flex:1 1 240px;font-size:.8rem}
+footer{margin-top:72px;padding-top:20px;border-top:1px solid var(--linie);font-size:.8rem;color:var(--leise);display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+@media (prefers-reduced-motion:reduce){.scene{transition:none}.hook .cursor{animation:none}.cta{transition:none}.button{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="buehne">
+<div class="wolke wolke--oben" aria-hidden="true"></div>
+<div class="wolke wolke--links" aria-hidden="true"></div>
+<div class="wolke wolke--unten" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow eyebrow--mitte">Markenschnitt</div>
+    <h1>Dein Reel.<br><span>Deine Marke.</span></h1>
+    <p class="subline">Claude schneidet deine Videos in deinem Markenstil</p>
+    <p class="text">Einmal einstellen, Text kopieren, in Claude einfügen. Danach legst du dein Video in deinen Ordner und sagst nur noch: „Schneide mein neues Reel.“</p>
+    <div class="req">
+      <span class="chip"><b>Mac mit Apple-Chip:</b> Schnitt in Edits, jeder Schnitt bleibt änderbar</span>
+      <span class="chip"><b>Andere Rechner:</b> fertige Videodatei (Testphase)</span>
+      <span class="chip"><b>Immer:</b> Claude-App ab Pro, Tab „Code“</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <form class="panel" id="form" autocomplete="off">
+
+      <fieldset class="gruen">
+        <legend>Aus der Markenberatung</legend>
+        <p class="hint">Diese Angaben entstehen im Beratungsgespräch. Sie machen aus einem guten Schnitt einen, der nach deiner Marke klingt.</p>
+        <div class="row2">
+          <div class="row"><label class="lab" for="marke">Marke oder Name</label><input type="text" id="marke" placeholder="z. B. Studio Bergweh"></div>
+          <div class="row"><label class="lab" for="ansprache">Ansprache in Texten</label>
+            <select id="ansprache"><option value="du">du</option><option value="ihr">ihr</option><option value="Sie">Sie</option></select></div>
+        </div>
+        <div class="row"><label class="lab" for="ton">So soll die Marke wirken</label><input type="text" id="ton" placeholder="z. B. klar, warm, mit einem Augenzwinkern"></div>
+        <div class="row"><label class="lab" for="schreib">Schreibweisen und Fachbegriffe</label><textarea id="schreib" placeholder="Eine pro Zeile, z. B.&#10;Bergweh (immer so, nie „Berg-Weh“)"></textarea></div>
+        <div class="row"><label class="lab" for="cta">Abschluss am Ende des Reels</label><input type="text" id="cta" placeholder="optional, z. B. Mehr Tipps im Profil"></div>
+        <div class="row"><label class="lab" for="tabu">Nie schneiden oder immer beachten</label><textarea id="tabu" placeholder="optional, z. B. Lachen am Satzende drinlassen. Keine Emojis in Untertiteln."></textarea></div>
+        <div class="row"><label class="lab" for="notiz">Notiz aus der Beratung</label><textarea id="notiz" placeholder="optional: Zielgruppe, Haltung, Wörter, die die Marke nie benutzt"></textarea></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Dein Videoordner</legend>
+        <p class="hint">Hier legst du deine Rohvideos ab. Die Videodateien bleiben auf deinem Rechner und in Edits. Claude bekommt nur, was es zum Schneiden braucht, zum Beispiel das Transkript. Fertige Schnitte landen im Unterordner „fertig“.</p>
+        <div class="row"><label class="lab" for="ordner">Ordnername im Ordner Filme</label><input type="text" id="ordner" placeholder="Markenschnitt" spellcheck="false"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Schrift</legend>
+        <div class="opts" role="radiogroup" aria-label="Schrift" id="fonts"></div>
+        <div class="row" id="eigeneBox" hidden>
+          <label class="lab" for="eigeneName">Name deiner Schrift</label>
+          <input type="text" id="eigeneName" placeholder="z. B. Gotham">
+          <p class="hint" id="eigeneHint">Leg die Schriftdatei (.otf oder .ttf) in Filme › deinen Videoordner (Ordner notfalls selbst anlegen). Sonst fragt Claude danach.</p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Farben</legend>
+        <div class="row">
+          <span class="lab">Markenfarbe für das gesprochene Wort</span>
+          <div class="swatches" id="swatches"></div>
+          <div class="hexrow"><input type="color" id="farbe" aria-label="Farbe wählen"><input type="text" id="hex" aria-label="Farbcode" maxlength="7" spellcheck="false"></div>
+        </div>
+        <div class="row">
+          <span class="lab">Übrige Untertitel</span>
+          <div class="opts" role="radiogroup" aria-label="Textfarbe">
+            <label class="opt"><input type="radio" name="textfarbe" value="weiß" checked><span>Weiß</span></label>
+            <label class="opt"><input type="radio" name="textfarbe" value="schwarz"><span>Schwarz</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Untertitel</legend>
+        <div class="row"><span class="lab">Wörter pro Zeile</span>
+          <div class="opts" role="radiogroup" aria-label="Wörter pro Zeile">
+            <label class="opt"><input type="radio" name="woerter" value="2"><span>bis 2<small>ruhig, groß</small></span></label>
+            <label class="opt"><input type="radio" name="woerter" value="4" checked><span>bis 4<small>Standard</small></span></label>
+            <label class="opt"><input type="radio" name="woerter" value="6"><span>bis 6<small>viel Text</small></span></label>
+          </div></div>
+        <div class="row2">
+          <div class="row"><span class="lab">Darstellung</span>
+            <div class="opts" role="radiogroup" aria-label="Darstellung">
+              <label class="opt"><input type="radio" name="substil" value="leuchten" checked><span>Wort leuchtet</span></label>
+              <label class="opt"><input type="radio" name="substil" value="box"><span>Kästchen</span></label>
+            </div></div>
+          <div class="row"><span class="lab">Position</span>
+            <div class="opts" role="radiogroup" aria-label="Position">
+              <label class="opt"><input type="radio" name="pos" value="unten" checked><span>unteres Drittel</span></label>
+              <label class="opt"><input type="radio" name="pos" value="mitte"><span>Mitte</span></label>
+            </div></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Schnitt</legend>
+        <div class="row"><span class="lab">Tempo</span>
+          <div class="opts" role="radiogroup" aria-label="Tempo">
+            <label class="opt"><input type="radio" name="tempo" value="ruhig"><span>Ruhig<small>Pausen ab 0,7 s raus</small></span></label>
+            <label class="opt"><input type="radio" name="tempo" value="natuerlich" checked><span>Natürlich<small>Pausen ab 0,45 s raus</small></span></label>
+            <label class="opt"><input type="radio" name="tempo" value="zuegig"><span>Zügig<small>Pausen ab 0,3 s raus</small></span></label>
+          </div></div>
+        <div class="row"><span class="lab">Zoom</span>
+          <div class="opts" role="radiogroup" aria-label="Zoom">
+            <label class="opt"><input type="radio" name="zoom" value="aus"><span>Kein Zoom</span></label>
+            <label class="opt"><input type="radio" name="zoom" value="sparsam" checked><span>Sparsam<small>2–3 starke Stellen</small></span></label>
+            <label class="opt"><input type="radio" name="zoom" value="lebendig"><span>Lebendig<small>Betonung, Aufzählungen</small></span></label>
+          </div></div>
+        <div class="row2">
+          <div class="row"><span class="lab">Hook oben im Bild</span>
+            <div class="opts" role="radiogroup" aria-label="Hook">
+              <label class="opt"><input type="radio" name="hook" value="aus"><span>Ohne</span></label>
+              <label class="opt"><input type="radio" name="hook" value="eingeblendet" checked><span>Eingeblendet</span></label>
+              <label class="opt"><input type="radio" name="hook" value="getippt"><span>Getippt</span></label>
+            </div></div>
+          <div class="row"><span class="lab">Format</span>
+            <div class="opts" role="radiogroup" aria-label="Format">
+              <label class="opt"><input type="radio" name="format" value="9:16" checked><span>Reel 9:16</span></label>
+              <label class="opt"><input type="radio" name="format" value="9:16+4:5"><span>Reel + Feed 4:5</span></label>
+            </div></div>
+        </div>
+        <div class="row"><span class="lab">Look</span>
+          <div class="opts" role="radiogroup" aria-label="Look">
+            <label class="opt"><input type="radio" name="look" value="natuerlich" checked><span>Wie gedreht</span></label>
+            <label class="opt"><input type="radio" name="look" value="warm"><span>Warm</span></label>
+            <label class="opt"><input type="radio" name="look" value="frisch"><span>Frisch</span></label>
+            <label class="opt"><input type="radio" name="look" value="gedeckt"><span>Gedeckt</span></label>
+          </div></div>
+      </fieldset>
+    </form>
+
+    <aside class="side" aria-label="Vorschau">
+      <div class="phone" id="phone">
+        <div class="scene" id="scene"><div class="bgfill"></div><div class="shelf"></div><div class="plant"></div><div class="body"></div><div class="hair"></div><div class="head"></div></div>
+        <div class="look" id="lookLayer"></div>
+        <div class="hook" id="hookEl"></div>
+        <div class="subs pos-unten" id="subs"></div>
+        <div class="cta" id="ctaEl"></div>
+        <div class="ig" aria-hidden="true"><i></i><i></i><i></i></div>
+      </div>
+      <div class="timeline" aria-label="Schnitt-Zeitleiste">
+        <div class="tl-head"><span>Rohvideo</span><span id="tBefore">00:42</span></div>
+        <div class="tl before" id="tlBefore"></div>
+        <div class="tl-head"><span>Nach dem Schnitt</span><span id="tAfter">00:31</span></div>
+        <div class="tl after" id="tlAfter"></div>
+      </div>
+      <p class="preview-note">Beispielvorschau mit Platzhalterbild. Dein Reel bekommt diesen Stil mit deinem Video.</p>
+      <button type="button" class="replay" id="replay">Vorschau neu abspielen</button>
+    </aside>
+  </div>
+
+  <section class="abschnitt" aria-labelledby="h-mac">
+    <div class="eyebrow">So funktioniert es</div>
+    <h2 id="h-mac">Was auf deinem Rechner passiert</h2>
+    <p class="note">Diese Seite schneidet nichts. Sie stellt deinen Einrichtungstext zusammen. Den fügst du einmal in Claude ein, und Claude legt auf deinem Rechner drei Dinge an:</p>
+    <div class="kacheln">
+      <div class="kachel"><h3>Dein Videoordner</h3><p class="pfad" id="pfadOrdner">Filme › Markenschnitt</p><p>Hier legst du Rohvideos ab. Claude holt sie von dort, die fertigen Schnitte landen in „fertig“.</p></div>
+      <div class="kachel kachel--gruen"><h3>Die Schnittregeln</h3><p class="pfad">Skill „markenschnitt“ in Claude</p><p>Wie geschnitten wird: Pausen, Untertitel, Zoom, Ton. Gibt es eine neue Fassung, fragt Claude dich einmal kurz und spielt sie dann selbst ein.</p></div>
+      <div class="kachel"><h3>Dein Stil</h3><p class="pfad">stil.md neben den Schnittregeln</p><p>Alles von dieser Seite und aus der Beratung. Sagst du nach einem Schnitt „Merk dir das“, wächst er mit, und das Gelernte hat Vorrang. Updates fassen ihn nie an.</p></div>
+    </div>
+  </section>
+
+  <section class="abschnitt" aria-labelledby="h-out">
+    <div class="eyebrow">Einrichten</div>
+    <h2 id="h-out">In drei Schritten startklar</h2>
+    <div class="schritte">
+      <div class="schritt"><span class="n">Schritt 1</span><h3>Text kopieren</h3><p>Mit dem Knopf unten. Er enthält deinen Stil.</p></div>
+      <div class="schritt"><span class="n">Schritt 2</span><h3>In Claude einfügen</h3><p>Claude-App öffnen, Tab „Code“, einen Ordner wählen, Text einfügen, senden. Claude richtet alles ein. Du meldest dich nur in Edits an, kopierst dort einen Befehl und klickst Freigaben an.</p></div>
+      <div class="schritt"><span class="n">Schritt 3</span><h3>Video ablegen</h3><p id="schritt3">Video in Filme › Markenschnitt legen, in Claude eine neue Sitzung öffnen und sagen: „Schneide mein neues Reel.“</p></div>
+    </div>
+    <div class="einrichten">
+      <button type="button" class="button" id="copyBtn">Einrichtungstext kopieren</button>
+      <p class="status" id="copyStatus" role="status"></p>
+      <p class="note">Schon eingerichtet? Einfach erneut kopieren und einfügen. Claude überspringt, was schon läuft, übernimmt den neuen Stil und behält alles, was du ihm mit „Merk dir das“ beigebracht hast.</p>
+      <details><summary>Einrichtungstext ansehen</summary><pre id="promptOut"></pre></details>
+    </div>
+  </section>
+
+  <section class="abschnitt" aria-labelledby="h-nach">
+    <div class="eyebrow">Nachbessern</div>
+    <h2 id="h-nach">Ein Satz genügt</h2>
+    <p class="note">Gefällt dir etwas nicht, sag es Claude einfach. Mit „Merk dir das“ gilt die Änderung für alle nächsten Reels.</p>
+    <div class="phrases" id="phrases"></div>
+  </section>
+
+  <section class="abschnitt" aria-labelledby="h-code">
+    <div class="eyebrow">Für die Beratung</div>
+    <h2 id="h-code">Stil sichern und weitergeben</h2>
+    <p class="note">Der Stil-Code enthält alle Einstellungen dieser Seite. Damit lässt sich ein Kundenstil später wieder laden oder weitergeben.</p>
+    <div class="code-row">
+      <input type="text" id="stilcode" aria-label="Stil-Code" placeholder="Stil-Code hier einfügen" spellcheck="false">
+      <button type="button" class="btn" id="codeCopy">Code kopieren</button>
+      <button type="button" class="btn" id="codeLoad">Code laden</button>
+    </div>
+    <p class="status" id="codeStatus" role="status"></p>
+  </section>
+
+  <footer><span>Markenschnitt · Fassung 2</span><span>Deine Videodateien bleiben auf deinem Rechner. · <a href="https://byfroehlich.de/#impressum" style="color:var(--gold)">Impressum</a> · <a href="https://byfroehlich.de/#datenschutz" style="color:var(--gold)">Datenschutz</a></span></footer>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var FONTS=[
+  {id:"Montserrat",css:"'Montserrat',sans-serif",w:800},
+  {id:"Poppins",css:"'Poppins',sans-serif",w:700},
+  {id:"Archivo Black",css:"'Archivo Black',sans-serif",w:400},
+  {id:"Bebas Neue",css:"'Bebas Neue',sans-serif",w:400},
+  {id:"DM Serif Display",css:"'DM Serif Display',serif",w:400},
+  {id:"Inter",css:"'Inter',sans-serif",w:600},
+  {id:"eigene",css:"system-ui,sans-serif",w:700,label:"Eigene Schrift"}
+];
+var SWATCHES=["#C59A55","#FFD23F","#FF6B4A","#F25CA2","#7C5CFF","#3EC1D3","#9BE15D","#FFFFFF"];
+var LOOKS={
+  natuerlich:{label:"wie gedreht, Farben bleiben unverändert",css:"none",filter:"none"},
+  warm:{label:"warm: etwas wärmere Farbtemperatur, Hauttöne weich",css:"linear-gradient(rgba(255,170,90,.38),rgba(255,140,60,.3))",filter:"saturate(1.05)"},
+  frisch:{label:"frisch: etwas mehr Kontrast und Klarheit, leicht kühl",css:"linear-gradient(rgba(120,200,255,.28),rgba(90,170,255,.22))",filter:"contrast(1.08) saturate(1.1)"},
+  gedeckt:{label:"gedeckt: Sättigung leicht reduziert, Schwarz minimal angehoben, filmisch",css:"linear-gradient(rgba(120,110,100,.35),rgba(80,80,90,.3))",filter:"saturate(.75) contrast(.95)"}
+};
+var TEMPO={ruhig:{s:"0,7",label:"ruhig"},natuerlich:{s:"0,45",label:"natürlich"},zuegig:{s:"0,3",label:"zügig"}};
+var HOOK_TEXT="Drei Fehler, die deine Reels unsichtbar machen";
+var SATZ="Erstens startest du zu langsam. Zweitens fehlt der rote Faden. Und drittens sagst du nie, was jetzt kommt.";
+var DEFAULT={marke:"",ansprache:"du",ton:"",schreib:"",cta:"",tabu:"",notiz:"",ordner:"Markenschnitt",schrift:"Montserrat",eigeneName:"",farbe:"#C59A55",textfarbe:"weiß",woerter:"4",substil:"leuchten",pos:"unten",tempo:"natuerlich",zoom:"sparsam",hook:"eingeblendet",format:"9:16",look:"natuerlich"};
+var st=Object.assign({},DEFAULT);
+var KEY="markenschnitt.v1";
+var VERSION="2";
+var UPDATE_BASE="https://raw.githubusercontent.com/byfroehlich/markenschnitt/main/skill/";
+var ALLOWED={ansprache:["du","ihr","Sie"],schrift:["Montserrat","Poppins","Archivo Black","Bebas Neue","DM Serif Display","Inter","eigene"],textfarbe:["weiß","schwarz"],woerter:["2","4","6"],substil:["leuchten","box"],pos:["unten","mitte"],tempo:["ruhig","natuerlich","zuegig"],zoom:["aus","sparsam","lebendig"],hook:["aus","eingeblendet","getippt"],format:["9:16","9:16+4:5"],look:["natuerlich","warm","frisch","gedeckt"]};
+function clean(o){var r=Object.assign({},DEFAULT);if(!o||typeof o!=="object")return r;Object.keys(DEFAULT).forEach(function(k){var v=o[k];if(typeof v!=="string")return;if(ALLOWED[k]){if(ALLOWED[k].indexOf(v)>=0)r[k]=v;}else if(k==="farbe"){if(/^#[0-9A-Fa-f]{6}$/.test(v))r[k]=v.toUpperCase();}else{r[k]=v.slice(0,600);}});return r;}
+try{st=clean(JSON.parse(localStorage.getItem(KEY)||"null"));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+function $(id){return document.getElementById(id);}
+
+/* Schrift-Auswahl */
+var fontsEl=$("fonts");
+FONTS.forEach(function(f){
+  var l=document.createElement("label");l.className="opt fontopt";
+  var i=document.createElement("input");i.type="radio";i.name="schrift";i.value=f.id;
+  var s=document.createElement("span");s.textContent=f.label||f.id;s.style.fontFamily=f.css;s.style.fontWeight=f.w;
+  l.appendChild(i);l.appendChild(s);fontsEl.appendChild(l);
+});
+/* Farbfelder */
+var swEl=$("swatches");
+SWATCHES.forEach(function(c){
+  var b=document.createElement("button");b.type="button";b.className="sw";b.style.background=c;b.setAttribute("aria-label","Farbe "+c);b.dataset.c=c;
+  b.addEventListener("click",function(){st.farbe=c;update();});swEl.appendChild(b);
+});
+
+var TEXT_IDS=["marke","ton","schreib","cta","tabu","notiz","ordner","eigeneName"];
+function fillForm(){
+  TEXT_IDS.forEach(function(id){$(id).value=st[id];});
+  $("ansprache").value=st.ansprache;
+  ["schrift","textfarbe","woerter","substil","pos","tempo","zoom","hook","format","look"].forEach(function(n){
+    var r=document.querySelector('input[name="'+n+'"][value="'+CSS.escape(st[n])+'"]');if(r)r.checked=true;
+  });
+}
+document.getElementById("form").addEventListener("input",function(e){
+  var t=e.target;
+  if(t.type==="radio"){st[t.name]=t.value;}
+  else if(t.id==="hex"){var v=t.value.trim();if(/^#?[0-9a-fA-F]{6}$/.test(v)){st.farbe=(v[0]==="#"?v:"#"+v).toUpperCase();}else{return;}}
+  else if(t.id==="farbe"){st.farbe=t.value.toUpperCase();}
+  else if(t.id&&Object.prototype.hasOwnProperty.call(st,t.id)){st[t.id]=t.value;}
+  update(t.type==="radio"&&(t.name==="hook"||t.name==="zoom"||t.name==="tempo"));
+});
+document.getElementById("form").addEventListener("submit",function(e){e.preventDefault();});
+
+function safe(t){return String(t||"").split(/\n/).map(function(s){return s.replace(/^\s*(#+|=+|-{3,})\s*/,"").replace(/=====/g,"");}).join("\n").slice(0,600);}
+function lines(txt){return safe(txt).split(/\n+/).map(function(s){return s.trim();}).filter(Boolean);}
+function ordnerName(){var o=(st.ordner||"").trim().replace(/[\/\\:*?"<>|]/g,"").replace(/^\.+|\.+$/g,"").slice(0,60);return o||"Markenschnitt";}
+function fontName(){return st.schrift==="eigene"?(st.eigeneName.trim()||"[Name deiner Schrift]"):st.schrift;}
+function contrastText(hex){var h=hex.replace("#","");var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)>150?"#111111":"#FFFFFF";}
+
+/* Einrichtungstext */
+function buildPrompt(){
+  var fn=fontName();
+  var O=ordnerName();
+  var eigene=st.schrift==="eigene";
+  var t=TEMPO[st.tempo];
+  var zoomTxt={aus:"kein Zoom, die Einstellung bleibt gleich",sparsam:"sparsam: nur an den 2–3 stärksten Stellen auf 110 %, jeweils für einen ganzen Gedanken",lebendig:"lebendig: Zoom als Betonung bei starken Aussagen und Aufzählungen, bei Aufzählungen eine Stufe pro Punkt (106 %, 112 %, 118 %), nie über 125 %, der erste Zoom im ersten Satz"}[st.zoom];
+  var hookTxt={aus:"kein Hook",eingeblendet:"Hook oben im Bild, einfach eingeblendet, ohne Ton",getippt:"Hook oben im Bild, Buchstabe für Buchstabe getippt (mit leisem Tippgeräusch, falls Edits eins anbietet)"}[st.hook];
+  var subTxt="höchstens "+st.woerter+" Wörter pro Zeile, "+(st.pos==="unten"?"im unteren Drittel, aber über der Bedienleiste von Instagram":"in der Bildmitte unterhalb des Gesichts")+", "+(st.substil==="box"?"jedes Wort in einem Kästchen ("+(st.textfarbe==="weiß"?"dunkel, halbtransparent":"hell, fast deckend")+"), das gesprochene Wort im Kästchen in der Markenfarbe":"das gesprochene Wort leuchtet in der Markenfarbe auf");
+  var schreib=lines(st.schreib);
+  var tabu=lines(st.tabu);
+  var fmt=st.format==="9:16"?"9:16 (1080 × 1920)":"9:16 (1080 × 1920), dazu eine zweite Fassung in 4:5 (1080 × 1350) für den Feed";
+  var schriftSchritt=eigene
+    ?"Meine Schrift heißt „"+fn+"“. Die Schriftdatei liegt im Ordner "+O+" in Filme; findest du keine, frag mich danach. Weg B: Kopiere sie zusätzlich nach ~/.markenschnitt/fonts. Weg A: In Edits lädst du sie beim ersten Schnitt hoch."
+    :"Meine Schrift ist „"+fn+"“ von Google Fonts. Lade sie herunter (Regular und, falls vorhanden, Bold; eine variable Schriftdatei ist auch in Ordnung) in den Ordner "+O+" in Filme, Weg B zusätzlich nach ~/.markenschnitt/fonts. Weg A: In Edits lädst du sie beim ersten Schnitt hoch.";
+
+  var P=[];
+  P.push("Richte bitte „Markenschnitt“ auf meinem Computer ein: Ab jetzt schneidest du meine Reels in meinem Markenstil. Mach alles selbst und frag mich nur, wenn ich klicken, mich anmelden oder etwas bestätigen muss. Erkläre keine Technik, sag mir nur kurz, was du gerade tust. Sag mir am Anfang, dass Freigabe-Fenster erscheinen werden und ich dort auf „Erlauben“ klicken soll. Überspring in Schritt 1 bis 3 alles, was schon eingerichtet ist. Schritt 4 führst du immer aus.");
+  P.push("");
+  P.push("SCHRITT 1: RECHNER PRÜFEN");
+  P.push("Prüfe, was für ein Rechner das ist. Mac: sysctl -n hw.optional.arm64 (Ergebnis 1 = Apple-Chip) und sw_vers. Windows: Systeminfo.");
+  P.push("- Mac mit Apple-Chip: Weg A, Schnitt in Edits.");
+  P.push("- Mac mit Intel-Chip oder Windows: Weg B, Schnitt direkt auf dem Rechner. Sag mir in einem Satz, dass meine Reels dann als fertige Videodatei entstehen statt in Edits.");
+  P.push("");
+  P.push("SCHRITT 2A: EDITS EINRICHTEN (nur Weg A)");
+  P.push("1. Such Edits in /Applications und ~/Applications. Fehlt es: Öffne edits.instagram.com, lade Edits für Mac und installiere es. Brauchst du dafür einen Klick von mir (Installationsfenster, App Store), sag mir genau, wo ich klicken soll. Dann Edits öffnen.");
+  P.push("2. Bitte mich, mich in Edits anzumelden (QR-Code mit dem Handy scannen).");
+  P.push("3. Prüf mit „claude mcp list“, ob Edits schon eingetragen und verbunden ist. Wenn ja, weiter mit SCHRITT 3. Steht Edits dort, ist aber nicht verbunden, entferne den Eintrag (claude mcp remove <Name> --scope user) und richte ihn neu ein.");
+  P.push("4. Bitte mich: in Edits oben rechts aufs Profilbild, dann „Automation“, dort „Enable Automation Server“ einschalten, bei „Claude Code“ auf Kopieren klicken und den kopierten Befehl hier einfügen. Prüf vorher, dass der Befehl mit „claude mcp add“ beginnt; sonst führ ihn nicht aus und frag mich. Fehlt „--scope user“, ergänze es, sonst änderst du nichts. Dann führ ihn aus. Er speichert meinen Zugangsschlüssel in der Claude-Einstellung, das ist so gewollt. Schreib den Schlüssel sonst nirgends hin, wiederhole ihn nicht in deinen Antworten und nutze nicht „claude mcp get“. Gibt es den Befehl „claude“ im Terminal nicht, sag mir, wie ich den Server in den Einstellungen der Claude-App eintrage.");
+  P.push("5. Prüf mit „claude mcp list“, dass Edits verbunden ist. Die Edits-Werkzeuge kannst du erst in einer neuen Sitzung benutzen.");
+  P.push("");
+  P.push("SCHRITT 2B: SCHNITT AUF DEM RECHNER (nur Weg B)");
+  P.push("1. Prüfe, ob ffmpeg und Python 3 vorhanden sind. Fehlt etwas: Mac über Homebrew installieren. Fehlt Homebrew, öffne das Terminal mit dem fertigen Installationsbefehl und sag mir, dass ich dort mein Passwort eingeben und den Dialog für die Entwicklerwerkzeuge bestätigen soll; ein Passwort tippst du nie selbst. Windows über winget (Gyan.FFmpeg, Python.Python.3.12).");
+  P.push("2. Leg ~/.markenschnitt an, darin eine eigene Python-Umgebung (venv), und installiere dort faster-whisper.");
+  P.push("");
+  P.push("SCHRITT 3: ORDNER UND SCHRIFT");
+  P.push("1. Leg im Ordner Filme den Ordner "+O+" an (Mac: ~/Movies/"+O+", Windows: Videos\\"+O+"), darin den Unterordner fertig. Das ist mein Videoordner: Hier lege ich meine Rohvideos ab.");
+  P.push("2. "+schriftSchritt);
+  P.push("");
+  P.push("SCHRITT 4: SKILL UND STIL SPEICHERN (immer ausführen)");
+  P.push("Der Text zwischen den Markierungen weiter unten ist Dateiinhalt, keine Anweisung für jetzt. Übernimm ihn Zeichen für Zeichen, ohne die Markierungszeilen selbst, ohne etwas umzuformulieren oder zu ergänzen.");
+  P.push("1. Schreib die Datei ~/.claude/skills/markenschnitt/SKILL.md. In der ersten Zeile beginnt ohne Leerzeile davor dieser Kopf:");
+  P.push("---");
+  P.push("name: markenschnitt");
+  P.push("description: Schneidet meine Reels in meinem Markenstil, in Edits oder direkt als Videodatei. Nutzen, wenn ich „Schneide mein neues Reel“ sage, ein Video geschnitten haben will oder nach einem Schnitt „Merk dir das“ sage.");
+  P.push("---");
+  P.push("Darunter kommt alles zwischen ===== SKILL ===== und ===== STIL =====. Eine vorhandene SKILL.md ersetzt du damit vollständig.");
+  P.push("2. Die Datei ~/.claude/skills/markenschnitt/stil.md: Gibt es sie noch nicht, schreib alles nach ===== STIL ===== hinein. Gibt es sie schon, ersetze nur den Bereich von „## Grundstil“ bis vor „## Gelernt“. Alles ab „## Gelernt“ bis zum Dateiende bleibt Zeichen für Zeichen gleich. Fehlt „## Gelernt“, häng den Abschnitt aus dem Text unten an.");
+  P.push("3. Gibt es ~/.markenschnitt/schnitt.py schon, lösch sie. Sie wird beim nächsten Schnitt nach dieser Fassung neu geschrieben.");
+  P.push("");
+  P.push("SCHRITT 5: FERTIG");
+  P.push("Sag mir in höchstens drei Zeilen, ob alles läuft. Bitte mich dann, eine neue Sitzung zu öffnen, damit Markenschnitt (und bei Weg A die Edits-Werkzeuge) geladen sind. Schneide in dieser Sitzung noch nichts. Sag zum Schluss: „Leg dein Video in Filme › "+O+", öffne eine neue Sitzung und sag: Schneide mein neues Reel.“");
+  P.push("");
+  P.push("===== SKILL =====");
+  P.push("# Markenschnitt");
+  P.push("Version: "+VERSION);
+  P.push("");
+  P.push("Lies vor jedem Schnitt die Datei ~/.claude/skills/markenschnitt/stil.md. Ihre Stilangaben gelten vor den Stilvorgaben in dieser Datei, die Regeln unter „Gelernt“ vor dem Grundstil. Der Abschnitt „Datenschutz“ und das Postverbot aus Schritt 11 gelten immer. Beachte Wirkung, Ansprache und Hinweise aus der Beratung in stil.md bei Hook, Abschluss und allen Schnittentscheidungen.");
+  P.push("");
+  P.push("## Welcher Weg");
+  P.push("- Edits-Werkzeuge verfügbar: Weg A, Schnitt in Edits.");
+  P.push("- Keine Edits-Werkzeuge, aber ~/.markenschnitt/venv vorhanden: Weg B, Schnitt mit ffmpeg und faster-whisper.");
+  P.push("- Keins von beidem: Sag mir, dass Edits geöffnet und der Automation Server eingeschaltet sein muss und ich danach eine neue Sitzung starten soll.");
+  P.push("");
+  P.push("## Wenn ich „Schneide mein neues Reel“ sage");
+  P.push("0. Weg A: Fehlt meine Schrift in Edits, lade sie zuerst als Schrift für mein Konto hoch (Datei aus meinem Videoordner).");
+  P.push("1. Nimm das neueste Video direkt in meinem Videoordner (siehe stil.md, nicht aus dem Unterordner fertig, keine Datei mit „_markenschnitt“ im Namen), außer ich nenne eine andere Datei. Liegt es woanders, kopier es zuerst dorthin. Kann Edits die Datei nicht öffnen, frag die Edits-Werkzeuge, aus welchem Ordner Edits lesen darf, und kopier sie dorthin.");
+  P.push("2. Erstelle ein Transkript mit Zeitstempel für jedes Wort, bei Weg A mit den Edits-Werkzeugen, bei Weg B mit faster-whisper. Wende die Schreibweisen aus stil.md an. Prüf Namen und Fachbegriffe gegen das, was wirklich gesagt wird. Merk dir Wörter, bei denen du unsicher bist.");
+  P.push("3. Grobschnitt: Schneide Pausen raus, die länger sind als die Pausengrenze in stil.md, dazu „äh“, „ähm“, Versprecher und abgebrochene Anläufe. Von einem doppelten Anlauf bleibt der letzte vollständige. Vor und nach jedem Satz bleibt etwa 0,15 Sekunden Luft, damit es nicht gehetzt klingt. Stell nie etwas um und lass nie Inhalt weg, außer Wiederholungen.");
+  P.push("4. Bild im Format aus stil.md. Das Gesicht bleibt gut im Bild. Halte oben und unten etwa 12 % frei von wichtigen Inhalten, dort liegen die Bedienelemente von Instagram.");
+  P.push("5. Zoom wie in stil.md. Immer als harter Schnitt, nie als Zoomfahrt. Ein Zoom gilt für einen ganzen Gedanken, danach zurück auf die normale Einstellung.");
+  P.push("6. Untertitel wie in stil.md, in der Sprache des Videos, Wort für Wort hervorgehoben. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.");
+  P.push("7. Hook wie in stil.md: der Satz aus dem Video, der am meisten neugierig macht, meistens der erste. Höchstens 8 Wörter, oben im Bild, in den ersten Sekunden, in meiner Schrift.");
+  P.push("8. Abschluss wie in stil.md: Steht dort ein Abschluss-Satz, blende ihn in den letzten 2 Sekunden ein, in Markenfarbe und meiner Schrift.");
+  P.push("9. Look wie in stil.md, als Ebene direkt über dem Video und unter Hook und Untertiteln, damit diese ihre Farben behalten.");
+  P.push("10. Ton: Stimme entrauschen, gleichmäßig laut (ungefähr −14 LUFS), nie übersteuern.");
+  P.push("Weg A: Alles nur mit den Edits-Werkzeugen. Installiere dafür nichts zusätzlich. Was Edits nicht kann, lässt du weg und nennst es im Bericht.");
+  P.push("11. Weg A: Nichts exportieren und nichts posten. Lass das Projekt in Edits offen, damit ich nachbessern kann. Weg B: Speichere das fertige Reel als MP4 (H.264, AAC) im Unterordner fertig meines Videoordners, Dateiname wie das Original mit „_markenschnitt“ (die Feed-Fassung mit „_markenschnitt_4x5“). Weg B postet nie.");
+  P.push("12. Bericht in höchstens 5 Zeilen: Länge vorher und nachher, was du geschnitten hast, unsichere Wörter in den Untertiteln und wo ich am ehesten nachschauen sollte.");
+  P.push("");
+  P.push("## Weg B im Detail");
+  P.push("- Spracherkennung mit faster-whisper aus ~/.markenschnitt (Modell „small“, auf schnellen Rechnern „medium“), mit Zeitstempeln je Wort.");
+  P.push("- Aus den Wortzeiten eine Schnittliste bauen und mit ffmpeg bildgenau schneiden. Danach aufs Format aus stil.md bringen.");
+  P.push("- Untertitel als ASS-Datei mit Wort-Hervorhebung in der Markenfarbe und meiner Schrift aus ~/.markenschnitt/fonts (statische .ttf-Dateien, keine variable Schrift; fontsdir mit ausgeschriebenem Pfad), ins Bild einbrennen. Hook und Abschluss ebenfalls über die ASS-Datei.");
+  P.push("- Zoom über Vergrößern und Zuschneiden an den Schnittstellen, Look über Farbfilter, Ton mit afftdn und loudnorm (I=-14).");
+  P.push("- Schreib den Ablauf einmal als Skript nach ~/.markenschnitt/schnitt.py und nutze es danach wieder. Das Skript liest alle Stilwerte bei jedem Lauf aus stil.md und enthält selbst keine. Gibt es das Skript nicht, schreib es neu.");
+  P.push("");
+  P.push("## Nachbessern");
+  P.push("- Sage ich, was mir nicht gefällt, änderst du es im aktuellen Reel.");
+  P.push("- Sage ich „Merk dir das“, trägst du die Änderung als kurze Regel mit Datum unter „Gelernt“ in stil.md ein. Diese Datei hier (SKILL.md) änderst du dafür nie.");
+  P.push("");
+  P.push("## Neue Fassung");
+  P.push("- Prüf höchstens einmal am Tag, vor dem ersten Schnitt, ob es eine neue Fassung gibt. Lies dazu mit curl -fsSL "+UPDATE_BASE+"VERSION (nicht mit WebFetch). Halte das Datum der Prüfung in ~/.markenschnitt/letzte-pruefung fest, auch wenn sie fehlschlägt (Ordner bei Bedarf anlegen).");
+  P.push("- Ist dort eine ganze Zahl, die größer ist als die Version oben, frag mich: „Neue Fassung von Markenschnitt verfügbar. Jetzt aktualisieren?“ Nur bei Ja: Lade "+UPDATE_BASE+"SKILL.md mit curl -fsSL in eine temporäre Datei. Übernimm sie nur, wenn Zeile 1 „---“ ist, „name: markenschnitt“ darin steht und die Zeile „Version: <Zahl>“ genau zur gelesenen Zahl passt. Dann ersetze diese Datei damit und lies sie neu. Sonst verwirf sie und sag es mir in einem Satz.");
+  P.push("- Ist die Adresse nicht erreichbar oder die Antwort keine ganze Zahl, schneide mit dieser Fassung weiter und sag nichts dazu.");
+  P.push("- stil.md fasst eine neue Fassung nie an. Bekomme ich einen neuen Einrichtungstext, ersetzt er diese Datei, in stil.md nur den Grundstil, „Gelernt“ bleibt.");
+  P.push("");
+  P.push("## Datenschutz");
+  P.push("Meine Videos bleiben auf meinem Rechner. Lade sie außer an Edits nirgendwo hoch, nutze keine anderen Online-Dienste dafür.");
+  P.push("===== STIL =====");
+  P.push("# Mein Markenstil");
+  P.push("");
+  P.push("## Grundstil");
+  if(st.marke.trim())P.push("- Marke: "+safe(st.marke).trim());
+  P.push("- Videoordner: Filme/"+O+" (Mac: ~/Movies/"+O+", Windows: %USERPROFILE%\\Videos\\"+O+"), fertige Schnitte im Unterordner fertig");
+  P.push("- Ansprache in eingeblendeten Texten: "+st.ansprache);
+  if(st.ton.trim())P.push("- So soll die Marke wirken: "+safe(st.ton).trim());
+  P.push("- Schrift: "+fn+(eigene?" (eigene Schriftdatei)":" (Google Fonts)"));
+  P.push("- Markenfarbe für das gesprochene Wort: "+st.farbe);
+  P.push("- Farbe der übrigen Untertitel: "+st.textfarbe);
+  P.push("- Untertitel: "+subTxt);
+  P.push("- Tempo: "+t.label+", Pausengrenze "+t.s+" Sekunden");
+  P.push("- Zoom: "+zoomTxt);
+  P.push("- Hook: "+hookTxt);
+  P.push("- Look: "+LOOKS[st.look].label);
+  P.push("- Format: "+fmt);
+  P.push("- Abschluss: "+(safe(st.cta).trim()?"„"+safe(st.cta).trim()+"“":"keiner"));
+  if(schreib.length){P.push("- Schreibweisen:");schreib.forEach(function(s){P.push("  - "+s);});}
+  if(tabu.length){P.push("- Nie schneiden oder immer beachten:");tabu.forEach(function(s){P.push("  - "+s);});}
+  if(st.notiz.trim()){P.push("- Hinweise aus der Markenberatung: "+safe(st.notiz).trim().replace(/\s*\n\s*/g," "));}
+  P.push("");
+  P.push("## Gelernt");
+  P.push("(noch leer)");
+  return P.join("\n");
+}
+
+/* Vorschau */
+var subsEl=$("subs"),hookEl=$("hookEl"),ctaEl=$("ctaEl"),scene=$("scene"),lookLayer=$("lookLayer"),phone=$("phone");
+var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function chunks(){var w=SATZ.split(" ");var n=parseInt(st.woerter,10);var out=[];for(var i=0;i<w.length;i+=n)out.push(w.slice(i,i+n));return out;}
+function fontCss(){var f=FONTS.filter(function(x){return x.id===st.schrift;})[0]||FONTS[0];return f;}
+function styleApply(){
+  var f=fontCss();
+  phone.style.setProperty("--brand",st.farbe);
+  phone.style.setProperty("--brandtext",contrastText(st.farbe));
+  phone.style.setProperty("--subtext",st.textfarbe==="weiß"?"#FFFFFF":"#111111");phone.style.setProperty("--boxbg",st.textfarbe==="weiß"?"rgba(0,0,0,.55)":"rgba(255,255,255,.85)");
+  subsEl.style.fontFamily=f.css;subsEl.style.fontWeight=f.w;
+  hookEl.style.fontFamily=f.css;hookEl.style.fontWeight=f.w;
+  ctaEl.style.fontFamily=f.css;
+  subsEl.className="subs pos-"+st.pos+(st.substil==="box"?" box":"");
+  if(st.schrift==="Bebas Neue"){subsEl.style.fontSize="27px";hookEl.style.fontSize="23px";}else{subsEl.style.fontSize="";hookEl.style.fontSize="";}
+  var L=LOOKS[st.look];lookLayer.style.background=L.css==="none"?"transparent":L.css;scene.style.filter=L.filter;
+  ctaEl.textContent=st.cta.trim();
+  document.querySelectorAll(".sw").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.c.toUpperCase()===st.farbe.toUpperCase()?"true":"false");});
+  $("farbe").value=st.farbe.length===7?st.farbe:"#FFD23F";
+  if(document.activeElement!==$("hex"))$("hex").value=st.farbe;
+  $("eigeneBox").hidden=st.schrift!=="eigene";
+  var O=ordnerName();$("pfadOrdner").textContent="Filme › "+O;$("schritt3").textContent="Video in Filme › "+O+" legen, in Claude eine neue Sitzung öffnen und sagen: „Schneide mein neues Reel.“";
+}
+function showLine(i,j){
+  var cs=chunks();subsEl.textContent="";
+  cs[i].forEach(function(w,k){var s=document.createElement("span");s.textContent=w;if(k===j)s.className="on";subsEl.appendChild(s);});
+  var z=1;
+  if(st.zoom==="sparsam"&&i===Math.floor(cs.length/2))z=1.10;
+  if(st.zoom==="lebendig"){z=[1,1.06,1.12,1.18,1.06,1.12,1.18][i%7];}
+  scene.style.transform="scale("+z+")";
+}
+var run=0;
+function wait(ms,id){return new Promise(function(ok,no){setTimeout(function(){id===run?ok():no();},ms);});}
+var gapMs={ruhig:520,natuerlich:400,zuegig:300};
+async function play(){
+  var id=++run;
+  try{
+    while(id===run){
+      subsEl.textContent="";hookEl.textContent="";ctaEl.classList.remove("show");scene.style.transform="scale(1)";
+      if(st.hook==="getippt"){
+        var t=document.createElement("span"),c=document.createElement("span");c.className="cursor";hookEl.appendChild(t);hookEl.appendChild(c);
+        for(var k=1;k<=HOOK_TEXT.length;k++){t.textContent=HOOK_TEXT.slice(0,k);await wait(38,id);}
+        await wait(250,id);c.remove();
+      }else if(st.hook==="eingeblendet"){
+        hookEl.textContent=HOOK_TEXT;hookEl.style.opacity=0;
+        for(var o=1;o<=10;o++){hookEl.style.opacity=o/10;await wait(30,id);}
+      }
+      await wait(250,id);
+      var cs=chunks();
+      for(var i=0;i<cs.length;i++){for(var j=0;j<cs[i].length;j++){showLine(i,j);await wait(gapMs[st.tempo],id);}}
+      if(st.cta.trim()){ctaEl.classList.add("show");await wait(1600,id);}
+      await wait(800,id);
+    }
+  }catch(e){}
+}
+function still(){
+  hookEl.style.opacity=1;hookEl.textContent=st.hook==="aus"?"":HOOK_TEXT;showLine(1,1);
+  if(st.cta.trim())ctaEl.classList.add("show");else ctaEl.classList.remove("show");
+}
+/* Zeitleiste: Beispiel-Rohvideo 42 s mit Sprechblöcken und Pausen */
+var SEGS=[[0,0.9,"p"],[0.9,4.6,"s"],[4.6,5.5,"p"],[5.5,9.8,"s"],[9.8,10.3,"p"],[10.3,10.9,"v"],[10.9,15.2,"s"],[15.2,16.9,"p"],[16.9,21.0,"s"],[21.0,21.6,"p"],[21.6,26.3,"s"],[26.3,27.0,"p"],[27.0,27.5,"v"],[27.5,32.4,"s"],[32.4,34.1,"p"],[34.1,39.0,"s"],[39.0,39.4,"p"],[39.4,41.0,"s"],[41.0,42.0,"p"]];
+var KEEP={ruhig:0.7,natuerlich:0.45,zuegig:0.3};
+function fmtT(s){s=Math.round(s);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+function drawTimeline(){
+  var total=42,lim=KEEP[st.tempo],bEl=$("tlBefore"),aEl=$("tlAfter");bEl.textContent="";aEl.textContent="";
+  var kept=[];
+  SEGS.forEach(function(sg){
+    var len=sg[1]-sg[0];var b=document.createElement("b");b.style.left=(sg[0]/total*100)+"%";b.style.width=(len/total*100)+"%";
+    var keepLen=0;
+    if(sg[2]==="s"){keepLen=len;}else if(sg[2]==="p"){keepLen=len>lim?0.3:len;}else{keepLen=0;}
+    if(sg[2]==="s"){bEl.appendChild(b);}else if(keepLen===0||keepLen<len){b.className="cut";bEl.appendChild(b);}
+    if(sg[2]==="s")kept.push(keepLen);else kept.push(-keepLen);
+  });
+  var after=0;kept.forEach(function(k){after+=Math.abs(k);});
+  var x=0;kept.forEach(function(k){if(k>0){var b=document.createElement("b");b.style.left=(x/total*100)+"%";b.style.width=(k/total*100)+"%";aEl.appendChild(b);}x+=Math.abs(k);});
+  $("tBefore").textContent=fmtT(total);$("tAfter").textContent=fmtT(after);
+}
+
+/* Nachbessern */
+var PHRASES=["Mach die Untertitel etwas größer.","Schneide enger, die Pausen sind noch zu lang.","Zoom nur an der stärksten Stelle.","Im Untertitel steht ein falsches Wort: [falsch] heißt [richtig].","Mach den Hook kürzer.","Merk dir das für alle nächsten Reels."];
+var phEl=$("phrases");
+PHRASES.forEach(function(p){
+  var d=document.createElement("div");d.className="phrase";var q=document.createElement("q");q.textContent=p;
+  var b=document.createElement("button");b.type="button";b.className="btn";b.textContent="Kopieren";
+  b.addEventListener("click",function(){copy(p,b,"Kopiert",q);});d.appendChild(q);d.appendChild(b);phEl.appendChild(d);
+});
+
+function selectNode(el){try{if(el.select){el.focus();el.select();return;}var r=document.createRange();r.selectNodeContents(el);var s=window.getSelection();s.removeAllRanges();s.addRange(r);}catch(e){}}
+function copy(text,btn,ok,fallbackEl,statusEl){
+  var old=btn.textContent;
+  var done=function(msg){btn.textContent=msg;setTimeout(function(){btn.textContent=old;},2200);};
+  var fail=function(){if(fallbackEl){var det=fallbackEl.closest("details");if(det)det.open=true;selectNode(fallbackEl);}done("Markiert – jetzt ⌘C bzw. Strg+C");};
+  try{navigator.clipboard.writeText(text).then(function(){done(ok);if(statusEl)statusEl.textContent="Kopiert. Jetzt in der Claude-App im Tab „Code“ einfügen.";},fail);}catch(e){fail();}
+}
+$("copyBtn").addEventListener("click",function(){if(st.schrift==="eigene"&&!st.eigeneName.trim()){$("copyStatus").textContent="Bitte zuerst den Namen deiner Schrift eintragen.";$("eigeneName").focus();return;}copy(buildPrompt(),$("copyBtn"),"Kopiert ✓",$("promptOut"),$("copyStatus"));});
+
+/* Stil-Code */
+function toCode(){try{return "MS1."+btoa(unescape(encodeURIComponent(JSON.stringify(st))));}catch(e){return "";}}
+$("codeCopy").addEventListener("click",function(){var c=toCode();$("stilcode").value=c;copy(c,$("codeCopy"),"Kopiert ✓",$("stilcode"));});
+$("codeLoad").addEventListener("click",function(){
+  var v=$("stilcode").value.trim();
+  try{
+    if(v.indexOf("MS1.")!==0)throw new Error();
+    var o=JSON.parse(decodeURIComponent(escape(atob(v.slice(4)))));
+    st=clean(o);
+    fillForm();update(true);$("codeStatus").textContent="Stil geladen.";
+  }catch(e){$("codeStatus").textContent="Der Code passt nicht. Bitte den ganzen Stil-Code einfügen, er beginnt mit MS1.";}
+});
+$("replay").addEventListener("click",function(){if(reduce)still();else play();});
+
+function update(restart){
+  styleApply();drawTimeline();$("promptOut").textContent=buildPrompt();save();
+  if(reduce){still();}else if(restart){play();}
+}
+fillForm();update(false);
+if(reduce)still();else play();
+})();
+</script>
+
+</body>
+</html>
