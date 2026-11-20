@@ -3,11 +3,11 @@ name: markenschnitt
 description: Schneidet meine Reels in meinem Markenstil, in Edits oder direkt als Videodatei. Nutzen, wenn ich „Schneide mein neues Reel“ sage, ein Video geschnitten haben will oder nach einem Schnitt „Merk dir das“ sage.
 ---
 # Markenschnitt
-Version: 4
+Version: 5
 
-Stilprofile: Mein eigener Stil steht in stil.md. Stile für Kundinnen und Kunden liegen je als eigene Datei in ~/.claude/skills/markenschnitt/stile/<Name>.md. Nenne ich einen Namen (z. B. „Schneide das Reel für Anna“), nimm genau diese Datei statt stil.md, sonst stil.md. Misch nie zwei Stile. Sag vor jedem Schnitt in einem Satz, welcher Stil gilt. „Leg einen Stil für <Name> an“: Kopier stil.md nach stile/<Name>.md, lösch dort alles unter „Gelernt“ und übernimm dann meine Änderungen. „Merk dir das“ schreibt immer in die Datei des Stils, der gerade gilt. Ordner und Schrift des Stils stehen in seiner Datei.
+Stilprofile: Mein eigener Stil steht in der Stildatei. Stile für Kundinnen und Kunden liegen je als eigene Datei in ~/.claude/skills/markenschnitt/stile/<Name>.md. Nenne ich einen Namen (z. B. „Schneide das Reel für Anna“), nimm genau diese Datei statt stil.md, sonst stil.md. Misch nie zwei Stile. Sag vor jedem Schnitt in einem Satz, welcher Stil gilt. „Leg einen Stil für <Name> an“: Kopier stil.md nach stile/<Name>.md, lösch dort alles unter „Gelernt“, setz den eigenen Videoordner und übernimm dann meine Änderungen. „Merk dir das“ schreibt immer in die Datei des Stils, der gerade gilt. Jedes Profil hat einen eigenen Videoordner: Beim Anlegen setzt du dort als Videoordner den Unterordner Filme/<mein Ordner>/<Name> (mit Unterordner fertig) und legst ihn an. Unten heißt die Datei, die für den aktuellen Schnitt gilt, „Stildatei“.
 
-Lies vor jedem Schnitt die Stildatei (stil.md oder das genannte Profil). Ihre Stilangaben gelten vor den Stilvorgaben in dieser Datei, die Regeln unter „Gelernt“ vor dem Grundstil. Der Abschnitt „Datenschutz“ und das Postverbot aus Schritt 11 gelten immer. Beachte Wirkung, Ansprache und Hinweise aus der Beratung in stil.md bei Hook, Abschluss und allen Schnittentscheidungen.
+Lies vor jedem Schnitt die Stildatei (stil.md oder das genannte Profil). Ihre Stilangaben gelten vor den Stilvorgaben in dieser Datei, die Regeln unter „Gelernt“ vor dem Grundstil. Der Abschnitt „Datenschutz“ und das Postverbot aus Schritt 11 gelten immer. Beachte Wirkung, Ansprache und Hinweise aus der Beratung in der Stildatei bei Hook, Abschluss und allen Schnittentscheidungen.
 
 ## Welcher Weg
 - Edits-Werkzeuge verfügbar: Weg A, Schnitt in Edits.
@@ -16,16 +16,16 @@ Lies vor jedem Schnitt die Stildatei (stil.md oder das genannte Profil). Ihre St
 
 ## Wenn ich „Schneide mein neues Reel“ sage
 0. Weg A: Fehlt meine Schrift in Edits, lade sie zuerst als Schrift für mein Konto hoch (Datei aus meinem Videoordner).
-1. Nimm das neueste Video direkt in meinem Videoordner (siehe stil.md, nicht aus dem Unterordner fertig, keine Datei mit „_markenschnitt“ im Namen), außer ich nenne eine andere Datei. Liegt es woanders, kopier es zuerst dorthin. Kann Edits die Datei nicht öffnen, frag die Edits-Werkzeuge, aus welchem Ordner Edits lesen darf, und kopier sie dorthin.
-2. Erstelle ein Transkript mit Zeitstempel für jedes Wort, bei Weg A mit den Edits-Werkzeugen, bei Weg B mit faster-whisper. Wende die Schreibweisen aus stil.md an. Prüf Namen und Fachbegriffe gegen das, was wirklich gesagt wird. Merk dir Wörter, bei denen du unsicher bist.
-3. Grobschnitt: Schneide Pausen raus, die länger sind als die Pausengrenze in stil.md, dazu „äh“, „ähm“, Versprecher und abgebrochene Anläufe. Von einem doppelten Anlauf bleibt der letzte vollständige. Vor und nach jedem Satz bleibt etwa 0,15 Sekunden Luft, damit es nicht gehetzt klingt. Stell nie etwas um und lass nie Inhalt weg, außer Wiederholungen.
-4. Bild im Format aus stil.md. Das Gesicht bleibt gut im Bild. Halte oben und unten etwa 12 % frei von wichtigen Inhalten, dort liegen die Bedienelemente von Instagram.
-5. Zoom wie in stil.md. Immer als harter Schnitt, nie als Zoomfahrt. Ein Zoom gilt für einen ganzen Gedanken, danach zurück auf die normale Einstellung.
-6. Untertitel wie in stil.md, in der Sprache des Videos, Wort für Wort hervorgehoben, wenn stil.md nichts anderes sagt. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.
+1. Nimm das neueste Video direkt in meinem Videoordner (siehe Stildatei, nicht aus dem Unterordner fertig, keine Datei mit „_markenschnitt“ im Namen), außer ich nenne eine andere Datei. Liegt es woanders, kopier es zuerst dorthin. Kann Edits die Datei nicht öffnen, frag die Edits-Werkzeuge, aus welchem Ordner Edits lesen darf, und kopier sie dorthin.
+2. Erstelle ein Transkript mit Zeitstempel für jedes Wort, bei Weg A mit den Edits-Werkzeugen, bei Weg B mit faster-whisper. Wende die Schreibweisen aus der Stildatei an. Prüf Namen und Fachbegriffe gegen das, was wirklich gesagt wird. Merk dir Wörter, bei denen du unsicher bist.
+3. Grobschnitt: Schneide Pausen raus, die länger sind als die Pausengrenze in der Stildatei, dazu „äh“, „ähm“, Versprecher und abgebrochene Anläufe. Von einem doppelten Anlauf bleibt der letzte vollständige. Vor und nach jedem Satz bleibt etwa 0,15 Sekunden Luft, damit es nicht gehetzt klingt. Stell nie etwas um und lass nie Inhalt weg, außer Wiederholungen.
+4. Bild im Format aus der Stildatei. Das Gesicht bleibt gut im Bild. Halte oben und unten etwa 12 % frei von wichtigen Inhalten, dort liegen die Bedienelemente von Instagram.
+5. Zoom wie in der Stildatei. Immer als harter Schnitt, nie als Zoomfahrt. Ein Zoom gilt für einen ganzen Gedanken, danach zurück auf die normale Einstellung.
+6. Untertitel wie in der Stildatei, in der Sprache des Videos, Wort für Wort hervorgehoben, wenn die Stildatei nichts anderes sagt. Setz die Schrift als letzten Schritt, weil Edits sie beim Ändern der Farbe zurücksetzen kann.
    Rechtschreibung in den Untertiteln: Jeder Block ist ein Ausschnitt aus dem ganzen Satz, nicht ein neuer Satz. Groß- und Kleinschreibung richtet sich nach dem ganzen Satz: Ein Block, der mitten im Satz beginnt, fängt klein an (außer Nomen und Namen). Satzzeichen aus dem Transkript (Punkt, Komma, Fragezeichen, Ausrufezeichen) bleiben am Wort stehen und werden mit angezeigt. Weg A: Edits setzt Blockanfänge oft automatisch groß und lässt Satzzeichen weg. Lies deshalb nach dem Einsetzen jeden Untertitel-Block mit den Edits-Werkzeugen aus, vergleich ihn Wort für Wort mit dem Transkript und korrigier Schreibung und Satzzeichen. Was sich in Edits nicht korrigieren lässt, nennst du im Bericht mit Zeitstelle.
-7. Hook wie in stil.md: der Satz aus dem Video, der am meisten neugierig macht, meistens der erste. Höchstens 8 Wörter, oben im Bild, in den ersten Sekunden, in meiner Schrift.
-8. Abschluss wie in stil.md: Steht dort ein Abschluss-Satz, blende ihn in den letzten 2 Sekunden ein, in Markenfarbe und meiner Schrift.
-9. Look wie in stil.md, als Ebene direkt über dem Video und unter Hook und Untertiteln, damit diese ihre Farben behalten.
+7. Hook wie in der Stildatei: der Satz aus dem Video, der am meisten neugierig macht, meistens der erste. Höchstens 8 Wörter, oben im Bild, in den ersten Sekunden, in meiner Schrift.
+8. Abschluss wie in der Stildatei: Steht dort ein Abschluss-Satz, blende ihn in den letzten 2 Sekunden ein, in Markenfarbe und meiner Schrift.
+9. Look wie in der Stildatei, als Ebene direkt über dem Video und unter Hook und Untertiteln, damit diese ihre Farben behalten.
 10. Ton: Stimme entrauschen, gleichmäßig laut (ungefähr −14 LUFS), nie übersteuern.
 Weg A: Alles nur mit den Edits-Werkzeugen. Installiere dafür nichts zusätzlich. Was Edits nicht kann, lässt du weg und nennst es im Bericht.
 11. Weg A: Nichts exportieren und nichts posten. Lass das Projekt in Edits offen, damit ich nachbessern kann. Weg B: Speichere das fertige Reel als MP4 (H.264, AAC) im Unterordner fertig meines Videoordners, Dateiname wie das Original mit „_markenschnitt“ (die Feed-Fassung mit „_markenschnitt_4x5“). Weg B postet nie.
@@ -33,10 +33,10 @@ Weg A: Alles nur mit den Edits-Werkzeugen. Installiere dafür nichts zusätzlich
 
 ## Weg B im Detail
 - Spracherkennung mit faster-whisper aus ~/.markenschnitt (Modell „small“, auf schnellen Rechnern „medium“), mit Zeitstempeln je Wort.
-- Aus den Wortzeiten eine Schnittliste bauen und mit ffmpeg bildgenau schneiden. Danach aufs Format aus stil.md bringen.
-- Untertitel als ASS-Datei so, wie stil.md es vorgibt (Position, Hervorhebung, Kästchen), in meiner Schrift aus ~/.markenschnitt/fonts (statische .ttf-Dateien, keine variable Schrift; fontsdir mit ausgeschriebenem Pfad), ins Bild einbrennen. Hook und Abschluss ebenfalls über die ASS-Datei.
+- Aus den Wortzeiten eine Schnittliste bauen und mit ffmpeg bildgenau schneiden. Danach aufs Format aus der Stildatei bringen.
+- Untertitel als ASS-Datei so, wie die Stildatei es vorgibt (Position, Hervorhebung, Kästchen), in meiner Schrift aus ~/.markenschnitt/fonts (statische .ttf-Dateien, keine variable Schrift; fontsdir mit ausgeschriebenem Pfad), ins Bild einbrennen. Hook und Abschluss ebenfalls über die ASS-Datei.
 - Zoom über Vergrößern und Zuschneiden an den Schnittstellen, Look über Farbfilter, Ton mit afftdn und loudnorm (I=-14).
-- Schreib den Ablauf einmal als Skript nach ~/.markenschnitt/schnitt.py und nutze es danach wieder. Das Skript liest alle Stilwerte bei jedem Lauf aus stil.md und enthält selbst keine. Gibt es das Skript nicht, schreib es neu.
+- Schreib den Ablauf einmal als Skript nach ~/.markenschnitt/schnitt.py und nutze es danach wieder. Das Skript bekommt den Pfad der Stildatei bei jedem Lauf als Argument, liest alle Stilwerte daraus und enthält selbst keine. Gibt es das Skript nicht, schreib es neu.
 
 ## Nachbessern
 - Sage ich, was mir nicht gefällt, änderst du es im aktuellen Reel.
@@ -46,7 +46,7 @@ Weg A: Alles nur mit den Edits-Werkzeugen. Installiere dafür nichts zusätzlich
 - Prüf höchstens einmal am Tag, vor dem ersten Schnitt, ob es eine neue Fassung gibt. Lies dazu mit curl -fsSL https://raw.githubusercontent.com/byfroehlich/markenschnitt/main/skill/VERSION (nicht mit WebFetch). Halte das Datum der Prüfung in ~/.markenschnitt/letzte-pruefung fest, auch wenn sie fehlschlägt (Ordner bei Bedarf anlegen).
 - Ist dort eine ganze Zahl, die größer ist als die Version oben, frag mich: „Neue Fassung von Markenschnitt verfügbar. Jetzt aktualisieren?“ Nur bei Ja: Lade https://raw.githubusercontent.com/byfroehlich/markenschnitt/main/skill/SKILL.md mit curl -fsSL in eine temporäre Datei. Übernimm sie nur, wenn Zeile 1 „---“ ist, „name: markenschnitt“ darin steht und die Zeile „Version: <Zahl>“ genau zur gelesenen Zahl passt. Dann ersetze diese Datei damit und lies sie neu. Sonst verwirf sie und sag es mir in einem Satz.
 - Ist die Adresse nicht erreichbar oder die Antwort keine ganze Zahl, schneide mit dieser Fassung weiter und sag nichts dazu.
-- stil.md fasst eine neue Fassung nie an. Bekomme ich einen neuen Einrichtungstext, ersetzt er diese Datei, in stil.md nur den Grundstil, „Gelernt“ bleibt.
+- stil.md und die Dateien in stile/ fasst eine neue Fassung nie an. Bekomme ich einen neuen Einrichtungstext, ersetzt er diese Datei, in seiner Stildatei nur den Grundstil, „Gelernt“ bleibt.
 
 ## Datenschutz
 Meine Videos bleiben auf meinem Rechner. Lade sie außer an Edits nirgendwo hoch, nutze keine anderen Online-Dienste dafür.
